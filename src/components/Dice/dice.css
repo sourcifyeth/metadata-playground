@@ -1,0 +1,52 @@
+.cls-1,
+.cls-3 {
+  fill: #000;
+}
+.cls-1 {
+  fill-rule: evenodd;
+}
+.cls-2 {
+  fill: #fff;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  5%,
+  95% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+.loader {
+  animation: fade-out 1200ms infinite ease-out;
+  transform-origin: center;
+}
+
+@keyframes die {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  60%,
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+.die-animation {
+  animation: die 1200ms infinite ease-out;
+  transform-origin: 50% 155.48px;
+}
+
+.center-dot {
+  animation: center-dot 1200ms infinite ease-out;
+  transform-origin: 50% 155.48px;
+}
