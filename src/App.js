@@ -2,11 +2,10 @@ import ContractCallDecoder from "@ethereum-sourcify/contract-call-decoder";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import "./App.css";
-import dice from "./assets/dice.png";
 import Connecting from "./components/Connecting";
 import CustomSelectSearch from "./components/CustomSelectSearch/CustomSelectSearch";
 import Modal from "./components/Modal";
-import shuffleContracts from "./shuffleContracts.json";
+import Shuffle from "./components/Shuffle";
 
 function App() {
   const [byteCode, setByteCode] = useState();
@@ -14,9 +13,7 @@ function App() {
   const [decodedCbor, setDecodedCbor] = useState();
   const [metadataHash, setMetadataHash] = useState();
   const [provider, setProvider] = useState();
-  const [address, setAddress] = useState(
-    "0x00878Ac0D6B8d981ae72BA7cDC967eA0Fae69df4"
-  );
+  const [address, setAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState();
   const [chainIndex, setChainIndex] = useState();
   const [chainObject, setChainObject] = useState();
@@ -37,19 +34,13 @@ function App() {
     // .catch(() => alert("Couldn't fetch networks"));
   }, []);
 
-  const handleShuffle = (e) => {
-    e.preventDefault();
-    const length = shuffleContracts.length;
-    const rand = Math.floor(Math.random() * length);
-    const chosenContract = shuffleContracts[rand];
-    console.log(rand);
-    console.log(chosenContract);
+  const handleChainAndContractChange = (chainId, address) => {
     const chainIndex = chainArray.findIndex(
-      (chainObj) => chainObj.chainId === chosenContract.chainId
+      (chainObj) => chainObj.chainId === chainId
     );
     setErrorMessage();
     handleChainChange(chainIndex);
-    setAddress(chosenContract.address);
+    setAddress(address);
   };
 
   const handleChainChange = (index) => {
@@ -222,10 +213,20 @@ function App() {
                 Network list from{" "}
                 <a
                   className="underline hover:text-gray-900"
-                  href="https://chainlist.org"
+                  href="https://github.com/ethereum-lists/chains"
                   target="_blank"
                 >
-                  chainlist.org
+                  ethereum-lists/chains
+                </a>
+              </div>
+              <div className="text-xs text-gray-600 text-center mt-1">
+                Contracts from{" "}
+                <a
+                  className="underline hover:text-gray-900"
+                  href="https://github.com/ethereum-lists/contracts"
+                  target="_blank"
+                >
+                  ethereum-lists/contracts
                 </a>
               </div>
             </div>
@@ -242,14 +243,9 @@ function App() {
               <span className="text-sm md:text-base">
                 Enter Contract Address or ENS
               </span>
-              <button
-                onClick={handleShuffle}
-                className="flex flex-row justify-center items-center text-sm"
-              >
-                {/* <Dice /> */}
-                <img src={dice} className="mr-1" width="20px" />
-                Shuffle
-              </button>
+              <Shuffle
+                handleChainAndContractChange={handleChainAndContractChange}
+              />
             </div>
 
             <div className="mt-2">
