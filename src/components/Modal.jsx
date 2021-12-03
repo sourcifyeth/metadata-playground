@@ -1,7 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef } from "react";
-import EtherscanButton from "./EtherscanButton";
+import BlockExplorerButton from "./BlockExplorerButton";
 import MetadataHash from "./MetadataHash";
 import SourcifyButton from "./SourcifyButton";
 
@@ -102,7 +102,7 @@ export default function Modal({
                     </Dialog.Title>
                     <div className="flex justify-center align-middle my-2">
                       <SourcifyButton chain={chain} address={address} />
-                      <EtherscanButton chain={chain} address={address} />
+                      <BlockExplorerButton chain={chain} address={address} />
                     </div>
                     <p className="text-lg font-bold text-gray-900">Bytecode</p>
                     <ByteCodeInput cborByteLength={cborByteLength}>

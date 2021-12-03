@@ -5,6 +5,7 @@ import "./App.css";
 import Connecting from "./components/Connecting";
 import CustomSelectSearch from "./components/CustomSelectSearch/CustomSelectSearch";
 import Modal from "./components/Modal";
+import RandomContractInfo from "./components/RandomContractInfo";
 import Shuffle from "./components/Shuffle";
 
 function App() {
@@ -239,6 +240,10 @@ function App() {
       <div>
         <form noValidate onSubmit={handleSubmitAddress} key="form">
           <div className="mt-8 text-gray-700">
+            <RandomContractInfo
+              chainId={chainObject?.chainId}
+              address={address}
+            />
             <div className="flex justify-between">
               <span className="text-sm md:text-base">
                 Enter Contract Address or ENS

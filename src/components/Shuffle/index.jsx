@@ -7,6 +7,7 @@ const Shuffle = ({ handleChainAndContractChange }) => {
   const [contracts, setContracts] = useState();
   useEffect(() => {
     fetch("https://us-east1-trends-298419.cloudfunctions.net/randomContract")
+      .then((response) => response.json())
       .then((randomContracts) => {
         console.log(randomContracts);
         setContracts(randomContracts);
