@@ -45,7 +45,7 @@ export default function Modal({
   chainObject,
 }) {
   const cancelButtonRef = useRef(null);
-  if (!chainObject || !address || !byteCode) {
+  if (!chainObject || !byteCode) {
     return null;
   }
   const { chainId: chain, name: networkName } = chainObject;
@@ -94,16 +94,23 @@ export default function Modal({
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="">
                   <div className="mt-3 sm:mt-0 sm:ml-4 sm:text-left white">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-center text-lg leading-6 font-medium text-gray-900"
-                    >
-                      Contract {address} on {networkName}
-                    </Dialog.Title>
-                    <div className="flex justify-center align-middle my-2">
-                      <SourcifyButton chain={chain} address={address} />
-                      <BlockExplorerButton chain={chain} address={address} />
-                    </div>
+                    {address ? (
+                      <div>
+                        <Dialog.Title
+                          as="h3"
+                          className="text-center text-lg leading-6 font-medium text-gray-900"
+                        >
+                          Contract {address} on {networkName}
+                        </Dialog.Title>
+                        <div className="flex justify-center align-middle my-2">
+                          <SourcifyButton chain={chain} address={address} />
+                          <BlockExplorerButton
+                            chain={chain}
+                            address={address}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
                     <p className="text-lg font-bold text-gray-900">Bytecode</p>
                     <ByteCodeInput cborByteLength={cborByteLength}>
                       {byteCode}

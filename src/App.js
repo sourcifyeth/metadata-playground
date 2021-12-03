@@ -99,50 +99,35 @@ function App() {
     setAddress(e.target.value);
   };
 
-  const handleBytecodeChange = (e) => {
+  const handleCustomBytecodeChange = (e) => {
     e.preventDefault();
     setErrorMessage();
     const input = e.target.value;
     const formattedBytecode = input.startsWith("0x")
       ? input.trim()
       : "0x" + input.trim();
-    console.log(formattedBytecode);
     setCustomByteCode(formattedBytecode);
   };
 
   const decodeBytecodeCbor = (byteCode) => {
+    let decodedCbor;
+    console.log("decoding bytecode: " + byteCode.slice(0, 50));
     const formattedBytecode = byteCode.startsWith("0x")
       ? byteCode.trim()
       : "0x" + byteCode.trim();
     try {
-      const hashObject =
-        ContractCallDecoder.decodeCborAtTheEnd(formattedBytecode);
-      return hashObject;
+      decodedCbor = ContractCallDecoder.decodeCborAtTheEnd(formattedBytecode);
     } catch (err) {
       console.error(err);
+      if (err.message.startsWith("Unexpected data")) {
+        setErrorMessage("Unable to decode bytecode with CBOR");
+      } else {
+        setErrorMessage(err.message);
+      }
       return null;
     }
-  };
-
-  const handleSubmitAddress = async (e) => {
-    e.preventDefault();
-    setErrorMessage();
-    let code;
-    try {
-      code = await provider.getCode(address);
-      console.log(address);
-    } catch (err) {
-      if (err) {
-        return setErrorMessage(err.message);
-      }
-    }
-    if (code == "0x") {
-      return setErrorMessage("No contract found at the address");
-    }
-    setByteCode(code);
-    setModalOpen(true);
-    const decodedCbor = await decodeBytecodeCbor(code);
     if (decodedCbor) {
+      setModalOpen(true);
       const stringifyBuffers = {}; // show buffers in hex
       Object.keys(decodedCbor).forEach((key) => {
         stringifyBuffers[key] =
@@ -164,13 +149,31 @@ function App() {
     }
   };
 
-  const handleConvertByteCode = (e) => {
+  const handleSubmitAddress = async (e) => {
     e.preventDefault();
-    const decoded = decodeBytecodeCbor(customByteCode);
-    console.log("Decoded");
-    console.log(decoded);
+    setErrorMessage();
+    let code;
+    try {
+      code = await provider.getCode(address);
+    } catch (err) {
+      if (err) {
+        return setErrorMessage(err.message);
+      }
+    }
+    if (code == "0x") {
+      return setErrorMessage("No contract found at the address");
+    }
+    setByteCode(code);
+    decodeBytecodeCbor(code);
   };
-  // provider && provider.getBlockNumber().then(console.log);
+
+  const handleDecodeCustomByteCode = (e) => {
+    e.preventDefault();
+    console.log("Decoding custom");
+    setAddress("");
+    setByteCode(customByteCode);
+    decodeBytecodeCbor(customByteCode);
+  };
 
   if (!chainArray) {
     return "Loading";
@@ -221,7 +224,7 @@ function App() {
                 </a>
               </div>
               <div className="text-xs text-gray-600 text-center mt-1">
-                Contracts from{" "}
+                Random contracts from{" "}
                 <a
                   className="underline hover:text-gray-900"
                   href="https://github.com/ethereum-lists/contracts"
@@ -277,7 +280,7 @@ function App() {
         </form>
       </div>
       <div>
-        <form noValidate onSubmit={handleConvertByteCode} key="form">
+        <form noValidate onSubmit={handleDecodeCustomByteCode} key="form">
           <div className="text-sm md:text-base mt-8 text-gray-700">
             <div>or paste contract bytecode</div>
 
@@ -288,8 +291,8 @@ function App() {
                 class=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
                 name="address"
                 placeholder="0x34a...456d"
-                value={pastedByteCode}
-                onChange={handleBytecodeChange}
+                value={customByteCode}
+                onChange={handleCustomBytecodeChange}
               />
             </div>
             <div className="w-full flex flex-col items-center">
