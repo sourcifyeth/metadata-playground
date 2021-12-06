@@ -7,6 +7,7 @@ import CustomSelectSearch from "./components/CustomSelectSearch/CustomSelectSear
 import Modal from "./components/Modal";
 import RandomContractInfo from "./components/RandomContractInfo";
 import Shuffle from "./components/Shuffle";
+import Explainer from "./Explainer";
 
 function App() {
   const [byteCode, setByteCode] = useState();
@@ -179,7 +180,7 @@ function App() {
     return "Loading";
   }
   return (
-    <div className="App mx-4 md:mx-48">
+    <div className="App mx-4 md:mx-48 lg:mx-64">
       <Modal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
@@ -224,7 +225,7 @@ function App() {
                 </a>
               </div>
               <div className="text-xs text-gray-600 text-center mt-1">
-                Random contracts from{" "}
+                Shuffle contracts from{" "}
                 <a
                   className="underline hover:text-gray-900"
                   href="https://github.com/ethereum-lists/contracts"
@@ -260,7 +261,7 @@ function App() {
               <input
                 type="text"
                 id="input-address"
-                class=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
+                class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
                 name="address"
                 placeholder="0x34a...456d"
                 value={address}
@@ -288,9 +289,9 @@ function App() {
               <textarea
                 type="text"
                 id="input-address"
-                class=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
+                class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
                 name="address"
-                placeholder="0x34a...456d"
+                placeholder="0x608060405234801561001057600080fd5b5061012f8061002060..."
                 value={customByteCode}
                 onChange={handleCustomBytecodeChange}
               />
@@ -305,6 +306,7 @@ function App() {
             </div>
           </div>
         </form>
+        <Explainer className="mt-8" />
       </div>
     </div>
   );

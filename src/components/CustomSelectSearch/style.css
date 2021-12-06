@@ -39,10 +39,11 @@
   height: 36px;
   width: 100%;
   padding: 0 40px 0 16px;
-  background: #fff;
-  border: 1px solid transparent;
+  background: #eaeef7;
+  color: #1e3877;
+  border: 1px solid #aab9dd;
   box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.15);
-  border-radius: 3px;
+  border-radius: 0.5rem;
   outline: none;
   font-size: 14px;
   text-align: left;
@@ -158,8 +159,8 @@
 .select-search:not(.is-loading):not(.select-search--multiple)
   .select-search__value::after {
   transform: rotate(45deg);
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border-right: 1px solid #1e3877;
+  border-bottom: 1px solid #1e3877;
   pointer-events: none;
 }
 
