@@ -8,6 +8,15 @@ import SourcifyButton from "./SourcifyButton";
 const highlightStyle = " bg-blue-900 text-gray-50";
 const cborHighlightStyle = " bg-yellow-800 text-gray-50";
 
+const SolcVersion = ({ hexversion }) => {
+  const rawHex = hexversion.slice(2); // remove 0x
+  const rawHexFields = rawHex.match(/.{1,2}/g); // split into two chars
+  const decimalFields = rawHexFields
+    .map((rawHex) => "0x" + rawHex)
+    .map((prefixedHex) => Number(prefixedHex));
+  const version = decimalFields.join(".");
+  return version;
+};
 const ByteCodeInput = ({ children, cborByteLength }) => {
   // autoscroll to dummy bottom element
   const bottom = useRef();
@@ -117,7 +126,9 @@ export default function Modal({
                     </ByteCodeInput>
                     {/* Decoded */}
                     <div className="mt-4">
-                      <p className="text-lg font-bold text-gray-900">Decoded</p>
+                      <p className="text-lg font-bold text-gray-900">
+                        CBOR decoding
+                      </p>
 
                       {decodedCbor ? (
                         <div>
@@ -144,6 +155,15 @@ export default function Modal({
                         <div> No CBOR code to decode </div>
                       )}
                     </div>
+                    {/* solc version */}
+                    {decodedCbor?.solc && (
+                      <div className="mt-4">
+                        <p className="text-lg font-bold text-gray-900">
+                          Solitidy compiler version (decoded)
+                        </p>
+                        <SolcVersion hexversion={decodedCbor.solc} />
+                      </div>
+                    )}
                     {/* IPFS Link */}
                     <div className="mt-4">
                       <p className="text-lg font-bold text-gray-900">
