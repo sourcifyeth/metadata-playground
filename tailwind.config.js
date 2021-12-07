@@ -21,6 +21,7 @@ module.exports = {
       opacity: ["disabled"],
       cursor: ["disabled"],
       textColor: ["disabled"],
+      translate: ["active"],
     },
   },
   plugins: [],

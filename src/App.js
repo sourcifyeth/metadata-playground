@@ -5,8 +5,8 @@ import "./App.css";
 import Connecting from "./components/Connecting";
 import CustomSelectSearch from "./components/CustomSelectSearch/CustomSelectSearch";
 import Modal from "./components/Modal";
+import RandomContract from "./components/RandomContract";
 import RandomContractInfo from "./components/RandomContractInfo";
-import Shuffle from "./components/Shuffle";
 import Explainer from "./Explainer";
 
 function App() {
@@ -225,7 +225,7 @@ function App() {
                 </a>
               </div>
               <div className="text-xs text-gray-600 text-center mt-1">
-                Shuffle contracts from{" "}
+                Random contracts from{" "}
                 <a
                   className="underline hover:text-gray-900"
                   href="https://github.com/ethereum-lists/contracts"
@@ -249,10 +249,10 @@ function App() {
               address={address}
             />
             <div className="flex justify-between">
-              <span className="text-sm md:text-base">
+              <div className="text-sm md:text-base flex items-end">
                 Enter Contract Address or ENS
-              </span>
-              <Shuffle
+              </div>
+              <RandomContract
                 handleChainAndContractChange={handleChainAndContractChange}
               />
             </div>
