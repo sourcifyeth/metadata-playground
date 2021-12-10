@@ -2,6 +2,7 @@ import ContractCallDecoder from "@ethereum-sourcify/contract-call-decoder";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import "./App.css";
+import nonrandomContracts from "./assets/nonrandomContracts";
 import Connecting from "./components/Connecting";
 import CustomSelectSearch from "./components/CustomSelectSearch/CustomSelectSearch";
 import Header from "./components/Header";
@@ -26,6 +27,10 @@ function App() {
   const [connected, setConnected] = useState("not connected");
 
   useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const paramAddress = urlParams.get("address");
+    const paramChainId = parseInt(urlParams.get("chainId"));
     fetch("https://chainid.network/chains.json")
       .then((res) => res.json())
       .then((json) => {
@@ -33,16 +38,38 @@ function App() {
         setChainObject(json[0]);
         setChainIndex(0);
         handleProviderChange(json[0]);
+        if (paramAddress && paramChainId) {
+          console.log(paramAddress);
+          console.log(paramChainId);
+          handleChainAndContractChange(paramChainId, paramAddress, json);
+        }
       });
     // .catch(() => alert("Couldn't fetch networks"));
   }, []);
 
-  const handleChainAndContractChange = (chainId, address) => {
-    const chainIndex = chainArray.findIndex(
-      (chainObj) => chainObj.chainId === chainId
-    );
+  const handleChainAndContractChange = (
+    chainId,
+    address,
+    fetchedChainArray
+  ) => {
+    let chainIndex;
+    if (fetchedChainArray) {
+      // If chainArray state is not set yet.
+      chainIndex = fetchedChainArray.findIndex(
+        (chainObj) => chainObj.chainId === chainId
+      );
+      console.log(typeof chainId);
+      console.log(fetchedChainArray);
+      setChainIndex(chainIndex);
+      setChainObject(fetchedChainArray[chainIndex]);
+      handleProviderChange(fetchedChainArray[chainIndex]);
+    } else {
+      chainIndex = chainArray.findIndex(
+        (chainObj) => chainObj.chainId === chainId
+      );
+      handleChainChange(chainIndex);
+    }
     setErrorMessage();
-    handleChainChange(chainIndex);
     setAddress(address);
   };
 
@@ -193,7 +220,7 @@ function App() {
           address={address}
           chainObject={chainObject}
         />
-        <div className="flex flex-col items-center mt-4 md:mt-8">
+        <div className="flex flex-col items-center">
           <img
             className="w-16 md:w-20"
             src={process.env.PUBLIC_URL + "/solidity.png"}
@@ -277,6 +304,25 @@ function App() {
                 >
                   Decode
                 </button>
+              </div>
+              <div className="mt-2 text-center">
+                {" "}
+                <span>Some non-random interesting contracts:</span>
+                <span>
+                  {nonrandomContracts.map((contract, i) => (
+                    <a
+                      className="px-1 hover:underline text-lg cursor-pointer"
+                      onClick={() =>
+                        handleChainAndContractChange(
+                          contract.chainId,
+                          contract.address
+                        )
+                      }
+                    >
+                      {i + 1}
+                    </a>
+                  ))}
+                </span>
               </div>
             </div>
           </form>

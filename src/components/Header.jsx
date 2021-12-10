@@ -2,7 +2,7 @@ import { GithubIcon, GitterIconOutlined, TwitterIcon } from "../assets/icons";
 
 const Header = () => {
   return (
-    <header className="flex flex-row items-center justify-between bg-gray-50 md:px-10 px-4">
+    <header className="flex flex-row items-center justify-between md:px-10 px-4">
       <a
         href="https://sourcify.dev"
         target="_blank"

@@ -159,7 +159,7 @@ export default function Modal({
                     {decodedCbor?.solc && (
                       <div className="mt-4">
                         <p className="text-lg font-bold text-gray-900">
-                          Solitidy compiler version (decoded)
+                          Solidity compiler version (decoded)
                         </p>
                         <SolcVersion hexversion={decodedCbor.solc} />
                       </div>
