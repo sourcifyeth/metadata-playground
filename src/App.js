@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Connecting from "./components/Connecting";
 import CustomSelectSearch from "./components/CustomSelectSearch/CustomSelectSearch";
+import Header from "./components/Header";
 import Modal from "./components/Modal";
 import RandomContract from "./components/RandomContract";
 import RandomContractInfo from "./components/RandomContractInfo";
@@ -180,133 +181,134 @@ function App() {
     return "Loading";
   }
   return (
-    <div className="App mx-4 md:mx-48 lg:mx-64">
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        byteCode={byteCode}
-        decodedCbor={decodedCbor}
-        metadataHash={metadataHash}
-        address={address}
-        chainObject={chainObject}
-      />
-      <div className="flex flex-col items-center mt-8 md:mt-16">
-        <img
-          className="w-20 md:w-24"
-          src={process.env.PUBLIC_URL + "/solidity.png"}
-          alt="Solidity logo"
+    <div className="App">
+      <Header />
+      <div className="mx-4 md:mx-48 lg:mx-64">
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          byteCode={byteCode}
+          decodedCbor={decodedCbor}
+          metadataHash={metadataHash}
+          address={address}
+          chainObject={chainObject}
         />
+        <div className="flex flex-col items-center mt-4 md:mt-8">
+          <img
+            className="w-16 md:w-20"
+            src={process.env.PUBLIC_URL + "/solidity.png"}
+            alt="Solidity logo"
+          />
 
-        <div className="mt-4 text-2xl font-medium">Solidity metadata.json</div>
-        <div className="mt-1 mb-4 text-sm md:text-base text-center text-gray-700">
-          It is everything you need to reproduce a smart contract compilation
-          and to verify its source
+          <div className="mt-4 text-xl md:text-3xl font-medium">
+            Solidity metadata.json playground
+          </div>
+          <div className="mt-2">
+            {chainArray ? (
+              <div>
+                <Connecting connected={connected} />
+                <CustomSelectSearch
+                  options={chainArray.map((chain, i) => ({
+                    name: `#${chain.chainId} ${chain.name}`,
+                    value: i,
+                  }))}
+                  value={chainIndex}
+                  onChange={handleChainChange}
+                />
+                <div className="text-xs text-gray-600 text-center mt-1">
+                  Network list from{" "}
+                  <a
+                    className="underline hover:text-gray-900"
+                    href="https://github.com/ethereum-lists/chains"
+                    target="_blank"
+                  >
+                    ethereum-lists/chains
+                  </a>
+                </div>
+                <div className="text-xs text-gray-600 text-center mt-1">
+                  Random contracts from{" "}
+                  <a
+                    className="underline hover:text-gray-900"
+                    href="https://github.com/ethereum-lists/contracts"
+                    target="_blank"
+                  >
+                    ethereum-lists/contracts
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div> Loading chain list </div>
+            )}
+          </div>
+          <div className="text-red-800 text-sm text-center">{errorMessage}</div>
         </div>
         <div>
-          {chainArray ? (
-            <div>
-              <Connecting connected={connected} />
-              <CustomSelectSearch
-                options={chainArray.map((chain, i) => ({
-                  name: `#${chain.chainId} ${chain.name}`,
-                  value: i,
-                }))}
-                value={chainIndex}
-                onChange={handleChainChange}
+          <form noValidate onSubmit={handleSubmitAddress} key="form">
+            <div className="mt-8 text-gray-700">
+              <RandomContractInfo
+                chainId={chainObject?.chainId}
+                address={address}
               />
-              <div className="text-xs text-gray-600 text-center mt-1">
-                Network list from{" "}
-                <a
-                  className="underline hover:text-gray-900"
-                  href="https://github.com/ethereum-lists/chains"
-                  target="_blank"
-                >
-                  ethereum-lists/chains
-                </a>
+              <div className="flex justify-between">
+                <div className="text-sm md:text-base flex items-end">
+                  Enter Contract Address or ENS
+                </div>
+                <RandomContract
+                  handleChainAndContractChange={handleChainAndContractChange}
+                />
               </div>
-              <div className="text-xs text-gray-600 text-center mt-1">
-                Random contracts from{" "}
-                <a
-                  className="underline hover:text-gray-900"
-                  href="https://github.com/ethereum-lists/contracts"
-                  target="_blank"
+
+              <div className="mt-2">
+                <input
+                  type="text"
+                  id="input-address"
+                  class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
+                  name="address"
+                  placeholder="0x34a...456d"
+                  value={address}
+                  onChange={handleAddressChange}
+                />
+              </div>
+              <div className="w-full flex flex-col items-center">
+                <button
+                  type="submit"
+                  className="mt-1 py-2 px-4 w-full bg-ceruleanBlue-100 hover:bg-ceruleanBlue-130 focus:ring-ceruleanBlue-70 focus:ring-offset-ceruleanBlue-10 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg disabled:opacity-50 disabled:cursor-default"
+                  disabled={!(connected === "connected")}
                 >
-                  ethereum-lists/contracts
-                </a>
+                  Decode
+                </button>
               </div>
             </div>
-          ) : (
-            <div> Loading chain list </div>
-          )}
+          </form>
         </div>
-        <div className="text-red-800 text-sm text-center">{errorMessage}</div>
-      </div>
-      <div>
-        <form noValidate onSubmit={handleSubmitAddress} key="form">
-          <div className="mt-8 text-gray-700">
-            <RandomContractInfo
-              chainId={chainObject?.chainId}
-              address={address}
-            />
-            <div className="flex justify-between">
-              <div className="text-sm md:text-base flex items-end">
-                Enter Contract Address or ENS
+        <div>
+          <form noValidate onSubmit={handleDecodeCustomByteCode} key="form">
+            <div className="text-sm md:text-base mt-8 text-gray-700">
+              <div>or paste contract bytecode</div>
+
+              <div className="mt-2">
+                <textarea
+                  type="text"
+                  id="input-address"
+                  class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
+                  name="address"
+                  placeholder="0x608060405234801561001057600080fd5b5061012f8061002060..."
+                  value={customByteCode}
+                  onChange={handleCustomBytecodeChange}
+                />
               </div>
-              <RandomContract
-                handleChainAndContractChange={handleChainAndContractChange}
-              />
+              <div className="w-full flex flex-col items-center">
+                <button
+                  type="submit"
+                  className="mt-1 py-2 px-4 w-full bg-ceruleanBlue-100 hover:bg-ceruleanBlue-130 focus:ring-ceruleanBlue-70 focus:ring-offset-ceruleanBlue-10 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+                >
+                  Decode
+                </button>
+              </div>
             </div>
-
-            <div className="mt-2">
-              <input
-                type="text"
-                id="input-address"
-                class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
-                name="address"
-                placeholder="0x34a...456d"
-                value={address}
-                onChange={handleAddressChange}
-              />
-            </div>
-            <div className="w-full flex flex-col items-center">
-              <button
-                type="submit"
-                className="mt-1 py-2 px-4 w-full bg-ceruleanBlue-100 hover:bg-ceruleanBlue-130 focus:ring-ceruleanBlue-70 focus:ring-offset-ceruleanBlue-10 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg disabled:opacity-50 disabled:cursor-default"
-                disabled={!(connected === "connected")}
-              >
-                Decode Metadata Hash
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div>
-        <form noValidate onSubmit={handleDecodeCustomByteCode} key="form">
-          <div className="text-sm md:text-base mt-8 text-gray-700">
-            <div>or paste contract bytecode</div>
-
-            <div className="mt-2">
-              <textarea
-                type="text"
-                id="input-address"
-                class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
-                name="address"
-                placeholder="0x608060405234801561001057600080fd5b5061012f8061002060..."
-                value={customByteCode}
-                onChange={handleCustomBytecodeChange}
-              />
-            </div>
-            <div className="w-full flex flex-col items-center">
-              <button
-                type="submit"
-                className="mt-1 py-2 px-4 w-full bg-ceruleanBlue-100 hover:bg-ceruleanBlue-130 focus:ring-ceruleanBlue-70 focus:ring-offset-ceruleanBlue-10 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
-              >
-                Decode Metadata Hash
-              </button>
-            </div>
-          </div>
-        </form>
-        <Explainer className="mt-8" />
+          </form>
+          <Explainer className="mt-8" />
+        </div>
       </div>
     </div>
   );
