@@ -7,8 +7,8 @@ import Connecting from "./components/Connecting";
 import CustomSelectSearch from "./components/CustomSelectSearch/CustomSelectSearch";
 import Header from "./components/Header";
 import Modal from "./components/Modal";
-import RandomContract from "./components/RandomContract";
-import RandomContractInfo from "./components/RandomContractInfo";
+// import RandomContract from "./components/RandomContract";
+// import RandomContractInfo from "./components/RandomContractInfo";
 import Explainer from "./Explainer";
 
 function App() {
@@ -210,7 +210,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <div className="mx-4 md:mx-48 lg:mx-64">
+      <div className="mx-4 md:mx-48 lg:mx-64 decoration-2">
         <Modal
           isOpen={isModalOpen}
           onClose={() => setModalOpen(false)}
@@ -252,7 +252,7 @@ function App() {
                     ethereum-lists/chains
                   </a>
                 </div>
-                <div className="text-xs text-gray-600 text-center mt-1">
+                {/* <div className="text-xs text-gray-600 text-center mt-1">
                   Random contracts from{" "}
                   <a
                     className="underline hover:text-gray-900"
@@ -261,7 +261,7 @@ function App() {
                   >
                     ethereum-lists/contracts
                   </a>
-                </div>
+                </div> */}
               </div>
             ) : (
               <div> Loading chain list </div>
@@ -272,7 +272,7 @@ function App() {
         <div>
           <form noValidate onSubmit={handleSubmitAddress} key="form">
             <div className="mt-8 text-gray-700">
-              <RandomContractInfo
+              {/* <RandomContractInfo
                 chainId={chainObject?.chainId}
                 address={address}
               />
@@ -283,7 +283,7 @@ function App() {
                 <RandomContract
                   handleChainAndContractChange={handleChainAndContractChange}
                 />
-              </div>
+              </div> */}
 
               <div className="mt-2">
                 <input
@@ -307,11 +307,14 @@ function App() {
               </div>
               <div className="mt-2 text-center">
                 {" "}
-                <span>Some non-random interesting contracts:</span>
-                <span>
+                <div className="mt-4 text-lg">
+                  Click to decode some example contracts:
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-left">
+                  {/* <ul> */}
                   {nonrandomContracts.map((contract, i) => (
                     <a
-                      className="px-1 hover:underline text-lg cursor-pointer"
+                      className="px-1 hover:underline cursor-pointer"
                       onClick={() =>
                         handleChainAndContractChange(
                           contract.chainId,
@@ -319,10 +322,15 @@ function App() {
                         )
                       }
                     >
-                      {i + 1}
+                      {contract.name}
+                      <span className="text-sm text-gray-500">
+                        {" "}
+                        {contract.info}
+                      </span>
                     </a>
                   ))}
-                </span>
+                  {/* </ul> */}
+                </div>
               </div>
             </div>
           </form>

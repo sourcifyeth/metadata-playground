@@ -120,7 +120,9 @@ export default function Modal({
                         </div>
                       </div>
                     ) : null}
-                    <p className="text-lg font-bold text-gray-900">Bytecode</p>
+                    <p className="text-lg font-bold text-gray-900">
+                      Contract Bytecode
+                    </p>
                     <ByteCodeInput cborByteLength={cborByteLength}>
                       {byteCode}
                     </ByteCodeInput>

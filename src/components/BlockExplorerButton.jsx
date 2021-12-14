@@ -7,8 +7,11 @@ const BlockExplorerButton = ({ chain, address }) => {
     4: "rinkeby.etherscan.io",
     5: "goerli.etherscan.io",
     10: "optimistic.etherscan.io",
+    56: "bscscan.com",
+    97: "testnet.bscscan.com",
     69: "kovan-optimistic.etherscan.io",
     137: "polygonscan.com",
+    80001: "mumbai.polygonscan.com",
   };
 
   const blockscoutDomains = {

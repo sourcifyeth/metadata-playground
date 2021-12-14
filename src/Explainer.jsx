@@ -116,7 +116,7 @@ export default function Explainer(props) {
               <pre className={"overflow-x-auto bg-blue-900 text-gray-50"}>
                 {JSON.stringify(decodedCbor, null, 2)}
               </pre>
-              <div className="text-xs text-gray-700 text-right">
+              <div className="text-xs text-gray-700">
                 <a
                   href="https://cbor.me/?bytes=a2646970667358221220c019e4614043d8adc295c3046ba5142c603ab309adeef171f330c51c38f1498964736f6c63430008040033  "
                   target="_blank"
