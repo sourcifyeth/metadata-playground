@@ -11,6 +11,26 @@ import Modal from "./components/Modal";
 // import RandomContractInfo from "./components/RandomContractInfo";
 import Explainer from "./Explainer";
 
+const ScrollArrow = () => {
+  const [scrollHidden, setScrollHidden] = useState(false);
+  const handleScroll = () => {
+    if (window.pageYOffset > 200) {
+      setScrollHidden(true);
+      document.removeEventListener("scroll", handleScroll);
+    }
+  };
+  document.addEventListener("scroll", handleScroll);
+
+  return (
+    <div id="scrollArrow">
+      <svg class="arrows" hidden={scrollHidden}>
+        <path class="a1" d="M0 0 L30 32 L60 0"></path>
+        <path class="a2" d="M0 20 L30 52 L60 20"></path>
+        <path class="a3" d="M0 40 L30 72 L60 40"></path>
+      </svg>
+    </div>
+  );
+};
 function App() {
   const [byteCode, setByteCode] = useState();
   const [pastedByteCode, setPastedByteCode] = useState();
@@ -210,6 +230,7 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <ScrollArrow />
       <div className="mx-4 md:mx-48 lg:mx-64 decoration-2">
         <Modal
           isOpen={isModalOpen}
@@ -222,7 +243,7 @@ function App() {
         />
         <div className="flex flex-col items-center">
           <img
-            className="w-16 md:w-20"
+            className="w-12 md:w-16"
             src={process.env.PUBLIC_URL + "/solidity.png"}
             alt="Solidity logo"
           />
@@ -271,19 +292,19 @@ function App() {
         </div>
         <div>
           <form noValidate onSubmit={handleSubmitAddress} key="form">
-            <div className="mt-8 text-gray-700">
+            <div className="mt-2 text-gray-700">
               {/* <RandomContractInfo
                 chainId={chainObject?.chainId}
                 address={address}
-              />
+              /> */}
               <div className="flex justify-between">
                 <div className="text-sm md:text-base flex items-end">
                   Enter Contract Address or ENS
                 </div>
-                <RandomContract
+                {/* <RandomContract
                   handleChainAndContractChange={handleChainAndContractChange}
-                />
-              </div> */}
+                /> */}
+              </div>
 
               <div className="mt-2">
                 <input
@@ -307,14 +328,14 @@ function App() {
               </div>
               <div className="mt-2 text-center">
                 {" "}
-                <div className="mt-4 text-lg">
+                <div className="mt-4">
                   Click to decode some example contracts:
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-left">
+                <div className="flex flex-wrap justify-center items-center">
                   {/* <ul> */}
                   {nonrandomContracts.map((contract, i) => (
                     <a
-                      className="px-1 hover:underline cursor-pointer"
+                      className="mx-1 hover:underline cursor-pointer"
                       onClick={() =>
                         handleChainAndContractChange(
                           contract.chainId,
@@ -322,11 +343,12 @@ function App() {
                         )
                       }
                     >
-                      {contract.name}
-                      <span className="text-sm text-gray-500">
-                        {" "}
-                        {contract.info}
-                      </span>
+                      <button className="py-2 px-4 my-1 bg-ceruleanBlue-10 hover:bg-ceruleanBlue-100 hover:text-white text-ceruleanBlue-100 transition ease-in duration-100 text-center text-sm focus:outline-none focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
+                        {contract.name}
+                        <div className="text-xs text-gray-500">
+                          {contract.info}
+                        </div>
+                      </button>
                     </a>
                   ))}
                   {/* </ul> */}
@@ -337,7 +359,7 @@ function App() {
         </div>
         <div>
           <form noValidate onSubmit={handleDecodeCustomByteCode} key="form">
-            <div className="text-sm md:text-base mt-8 text-gray-700">
+            <div className="text-sm md:text-base text-gray-700">
               <div>or paste contract bytecode</div>
 
               <div className="mt-2">

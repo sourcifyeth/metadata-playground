@@ -34,7 +34,7 @@ export default function Explainer(props) {
 
   return (
     <div {...props}>
-      <div className="text-gray-900 mt-12 mb-20">
+      <div className="text-gray-900 mt-2 mb-20">
         <h1 className={h1Class}>What is Metadata?</h1>
         <div className="mt-2">
           The metadata.json file contains information about the compiled smart
