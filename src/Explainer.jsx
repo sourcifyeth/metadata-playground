@@ -38,7 +38,14 @@ export default function Explainer(props) {
         <h1 className={h1Class}>What is Metadata?</h1>
         <div className="mt-2">
           The metadata.json file contains information about the compiled smart
-          contract.
+          contract.{" "}
+          <a
+            href="https://docs.soliditylang.org/en/latest/metadata.html"
+            target="_blank"
+            className="text-gray-600 text-sm"
+          >
+            (See in Solidity docs)
+          </a>
         </div>
         <div className="mt-4">The metadata.json looks like this:</div>
         <div
