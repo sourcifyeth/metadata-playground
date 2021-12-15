@@ -20,7 +20,9 @@ const SolcVersion = ({ hexversion }) => {
 const ByteCodeInput = ({ children, cborByteLength }) => {
   // autoscroll to dummy bottom element
   const bottom = useRef();
-  useEffect(() => bottom.current.scrollIntoView({ behavior: "smooth" }));
+  useEffect(() =>
+    bottom.current.scrollIntoView({ behavior: "smooth", block: "nearest" })
+  );
   // If cborByteLength === 0, don't highlight.
   const cborStrLength = 2 * cborByteLength;
   const unhighlighted = cborByteLength
@@ -38,7 +40,7 @@ const ByteCodeInput = ({ children, cborByteLength }) => {
       <span className="">{unhighlighted}</span>
       <span className={"" + highlightStyle}>{highlighted}</span>
       <span className={"" + cborHighlightStyle}>{cborBytes}</span>
-      <div style={{ float: "left", clear: "both" }} ref={bottom}></div>
+      <div ref={bottom}>{"\n"}</div>
     </div>
   );
 };
@@ -53,7 +55,11 @@ export default function Modal({
   address,
   chainObject,
 }) {
-  const cancelButtonRef = useRef(null);
+  const focusButtonRef = useRef();
+  useEffect(() => {
+    focusButtonRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }, [focusButtonRef]);
+
   if (!chainObject || !byteCode) {
     return null;
   }
@@ -66,8 +72,8 @@ export default function Modal({
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 overflow-y-auto md:mx-24"
-        initialFocus={cancelButtonRef}
+        className="fixed z-10 inset-0 md:mx-24"
+        initialFocus={focusButtonRef}
         onClose={onClose}
       >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -99,7 +105,7 @@ export default function Modal({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+            <div className="overflow-y-auto max-h-screen inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="">
                   <div className="mt-3 sm:mt-0 sm:ml-4 sm:text-left white">
@@ -111,7 +117,11 @@ export default function Modal({
                         >
                           Contract {address} on {networkName}
                         </Dialog.Title>
-                        <div className="flex justify-center align-middle my-2">
+
+                        <div
+                          className="flex justify-center align-middle my-2"
+                          ref={focusButtonRef}
+                        >
                           <SourcifyButton chain={chain} address={address} />
                           <BlockExplorerButton
                             chain={chain}
@@ -181,7 +191,6 @@ export default function Modal({
                   type="button"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={onClose}
-                  ref={cancelButtonRef}
                 >
                   Close
                 </button>

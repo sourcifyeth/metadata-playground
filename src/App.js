@@ -33,7 +33,6 @@ const ScrollArrow = () => {
 };
 function App() {
   const [byteCode, setByteCode] = useState();
-  const [pastedByteCode, setPastedByteCode] = useState();
   const [decodedCbor, setDecodedCbor] = useState();
   const [metadataHash, setMetadataHash] = useState();
   const [provider, setProvider] = useState();
@@ -224,6 +223,12 @@ function App() {
     decodeBytecodeCbor(customByteCode);
   };
 
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setMetadataHash(null);
+    setDecodedCbor(null);
+    setByteCode(null);
+  };
   if (!chainArray) {
     return "Loading";
   }
@@ -234,7 +239,7 @@ function App() {
       <div className="mx-4 md:mx-48 lg:mx-64 decoration-2">
         <Modal
           isOpen={isModalOpen}
-          onClose={() => setModalOpen(false)}
+          onClose={handleModalClose}
           byteCode={byteCode}
           decodedCbor={decodedCbor}
           metadataHash={metadataHash}
