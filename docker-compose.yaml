@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  metadata-playground:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sourcify-metadata-playground
+    ports:
+      - "2346:80"
