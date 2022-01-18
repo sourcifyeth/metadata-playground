@@ -253,9 +253,9 @@ function App() {
             alt="Solidity logo"
           />
 
-          <div className="mt-4 text-xl md:text-3xl font-medium">
+          <h1 className="mt-4 text-2xl md:text-5xl font-medium vt323">
             Solidity metadata.json playground
-          </div>
+          </h1>
           <div className="mt-2">
             {chainArray ? (
               <div>
