@@ -1,7 +1,18 @@
 version: "3.7"
 
+x-project-base: &project-base
+  env_file:
+    - .env
+  restart: always
+  networks:
+    - source-verify
+    
+networks:
+  source-verify:
+
 services:
   metadata-playground:
+    <<: *project-base
     build:
       context: .
       dockerfile: Dockerfile
