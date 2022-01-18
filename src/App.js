@@ -365,7 +365,7 @@ function App() {
         <div>
           <form noValidate onSubmit={handleDecodeCustomByteCode} key="form">
             <div className="text-sm md:text-base text-gray-700">
-              <div>or paste contract bytecode</div>
+              <div className="mt-2">or paste contract bytecode</div>
 
               <div className="mt-2">
                 <textarea
