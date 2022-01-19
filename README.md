@@ -2,7 +2,7 @@
 
 This tool allows you to see the [Solidity metadata](https://docs.soliditylang.org/en/latest/metadata.html) hash and other information [encoded at the end](https://docs.soliditylang.org/en/latest/metadata.html#encoding-of-the-metadata-hash-in-the-bytecode) of the smart contract bytecode. Works with any EVM chain listed in [ethereum-lists/chains](https://github.com/ethereum-lists/chains) i.e. https://chainid.network/chains.json.
 
-Available at https://metadata.sourcify.dev
+Available at https://playground.sourcify.dev
 
 ## Usage
 
