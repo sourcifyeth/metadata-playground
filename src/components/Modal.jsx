@@ -5,7 +5,7 @@ import BlockExplorerButton from "./BlockExplorerButton";
 import MetadataHash from "./MetadataHash";
 import SourcifyButton from "./SourcifyButton";
 
-const highlightStyle = " bg-blue-900 text-gray-50";
+const highlightStyle = " bg-teal-800 text-gray-50";
 const cborHighlightStyle = " bg-yellow-800 text-gray-50";
 
 const SolcVersion = ({ hexversion }) => {
@@ -33,10 +33,7 @@ const ByteCodeInput = ({ children, cborByteLength }) => {
     : null;
   const cborBytes = cborByteLength ? children.slice(-4) : null;
   return (
-    <div
-      className="text-gray-700 overflow-y-auto break-all max-h-48 md:max-h-56 font-mono"
-      for="name"
-    >
+    <div className="text-gray-700 overflow-y-auto break-all max-h-48 md:max-h-56 font-mono">
       <span className="">{unhighlighted}</span>
       <span className={"" + highlightStyle}>{highlighted}</span>
       <span className={"" + cborHighlightStyle}>{cborBytes}</span>
@@ -72,11 +69,11 @@ export default function Modal({
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 md:mx-24"
+        className="fixed z-10 inset-0 md:mx-24 "
         initialFocus={focusButtonRef}
         onClose={onClose}
       >
-        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex justify-center items-center h-screen py-4 px-4 pb-4 text-center sm:block sm:p-0 text-sm md:text-base">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -105,8 +102,8 @@ export default function Modal({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="overflow-y-auto max-h-screen inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="px-4 pt-5 pb-4 overflow-y-auto h-full my-4 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-5xl">
+              <div className="">
                 <div className="">
                   <div className="mt-3 sm:mt-0 sm:ml-4 sm:text-left white">
                     {address ? (
@@ -187,13 +184,13 @@ export default function Modal({
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="">
                 <button
                   type="button"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={onClose}
                 >
-                  Close
+                  Close popup
                 </button>
               </div>
             </div>

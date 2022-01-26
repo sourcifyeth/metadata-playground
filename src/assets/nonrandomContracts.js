@@ -8,7 +8,7 @@ export default [
   },
   {
     name: "Uniswap",
-    info: "",
+    info: "no metadata hash",
     chainId: 1,
     address: "0xe592427a0aece92de3edee1f18e0157c05861564",
   },
@@ -31,7 +31,7 @@ export default [
   },
   {
     name: "PODK",
-    info: "",
+    info: "metadata on ipfs",
     chainId: 1,
     address: "0x2f55dac1c137f3ee8c8513858f161671ddddf214",
   },

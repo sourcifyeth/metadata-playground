@@ -102,7 +102,6 @@ function App() {
     provider
       .getNetwork()
       .then((data) => {
-        console.log(data);
         setConnected("connected");
       })
       .catch((err) => {
@@ -215,7 +214,7 @@ function App() {
     return "Loading";
   }
   return (
-    <div className="App">
+    <div className="App  break-words">
       <Header />
       <ScrollArrow />
       <div className="mx-4 md:mx-48 lg:mx-64 decoration-2">
@@ -235,10 +234,10 @@ function App() {
             alt="Solidity logo"
           />
 
-          <h1 className="mt-4 text-2xl md:text-5xl font-medium vt323 text-center">
+          <h1 className="mt-2 text-2xl md:text-5xl font-medium vt323 text-center">
             Solidity metadata.json playground
           </h1>
-          <div className="mt-2">
+          <div className="mt-4">
             {chainArray ? (
               <div>
                 <Connecting connected={connected} />
@@ -294,7 +293,7 @@ function App() {
                 /> */}
               </div>
 
-              <div className="mt-2">
+              <div className="">
                 <input
                   type="text"
                   id="input-address"
@@ -348,7 +347,7 @@ function App() {
             <div className="text-sm md:text-base text-gray-700">
               <div className="mt-2">or paste contract bytecode</div>
 
-              <div className="mt-2">
+              <div className="">
                 <textarea
                   type="text"
                   id="input-address"

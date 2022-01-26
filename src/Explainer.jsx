@@ -34,7 +34,7 @@ export default function Explainer(props) {
 
   return (
     <div {...props}>
-      <div className="text-gray-900 mt-2 mb-20">
+      <div className="text-gray-900 mt-2 mb-20 break-words">
         <h1 className={h1Class}>What is Metadata?</h1>
         <div className="mt-2">
           The metadata.json file contains information about the compiled smart
@@ -71,7 +71,7 @@ export default function Explainer(props) {
           When a smart contract is compiled, its metadata file is generated and
           the metadata file hash is stored at the end of the bytecode
         </div>
-        <div className="mt-6">
+        <div className="mt-6 break-all">
           <div className="font-bold">
             Bytecode of{" "}
             <a
@@ -83,7 +83,7 @@ export default function Explainer(props) {
               0x00878Ac0D6B8d981ae72BA7cDC967eA0Fae69df4 (Görli)
             </a>
           </div>
-          <div className="font-mono break-all bg-gray-100 m-1 p-4 text-left">
+          <div className="font-mono bg-gray-100 m-1 p-4 text-left">
             608060405234801561001057600080fd5b5061012f806100206000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80632e64cec11460375780636057361d146051575b600080fd5b603d6069565b6040516048919060c2565b60405180910390f35b6067600480360381019060639190608f565b6072565b005b60008054905090565b8060008190555050565b60008135905060898160e5565b92915050565b60006020828403121560a057600080fd5b600060ac84828501607c565b91505092915050565b60bc8160db565b82525050565b600060208201905060d5600083018460b5565b92915050565b6000819050919050565b60ec8160db565b811460f657600080fd5b5056fe
             <span className="font-semibold">
               a2646970667358221220c019e4614043d8adc295c3046ba5142c603ab309adeef171f330c51c38f1498964736f6c63430008040033
