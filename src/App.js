@@ -23,10 +23,10 @@ const ScrollArrow = () => {
 
   return (
     <div id="scrollArrow">
-      <svg class="arrows" hidden={scrollHidden}>
-        <path class="a1" d="M0 0 L30 32 L60 0"></path>
-        <path class="a2" d="M0 20 L30 52 L60 20"></path>
-        <path class="a3" d="M0 40 L30 72 L60 40"></path>
+      <svg className="arrows" hidden={scrollHidden}>
+        <path className="a1" d="M0 0 L30 32 L60 0"></path>
+        <path className="a2" d="M0 20 L30 52 L60 20"></path>
+        <path className="a3" d="M0 40 L30 72 L60 40"></path>
       </svg>
     </div>
   );
@@ -38,13 +38,14 @@ function App() {
   const [provider, setProvider] = useState();
   const [address, setAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState();
-  const [chainIndex, setChainIndex] = useState();
+  const [chainIndex, setChainIndex] = useState(0);
   const [chainObject, setChainObject] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
   const [customByteCode, setCustomByteCode] = useState();
-  const [chainArray, setChainArray] = useState();
+  const [chainArray, setChainArray] = useState(); // chainId.network/chains.json result
   const [connected, setConnected] = useState("not connected");
 
+  // On Mount
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -56,52 +57,25 @@ function App() {
         setChainArray(json);
         setChainObject(json[0]);
         setChainIndex(0);
-        handleProviderChange(json[0]);
         if (paramAddress && paramChainId) {
-          console.log(paramAddress);
-          console.log(paramChainId);
-          handleChainAndContractChange(paramChainId, paramAddress, json);
+          setAddress(paramAddress);
+          const chainIndex = json.findIndex(
+            (chainObj) => chainObj.chainId === paramChainId
+          );
+          setChainIndex(chainIndex);
         }
-      });
-    // .catch(() => alert("Couldn't fetch networks"));
+      })
+      .catch(() => alert("Couldn't fetch networks"));
   }, []);
 
-  const handleChainAndContractChange = (
-    chainId,
-    address,
-    fetchedChainArray
-  ) => {
-    let chainIndex;
-    if (fetchedChainArray) {
-      // If chainArray state is not set yet.
-      chainIndex = fetchedChainArray.findIndex(
-        (chainObj) => chainObj.chainId === chainId
-      );
-      console.log(typeof chainId);
-      console.log(fetchedChainArray);
-      setChainIndex(chainIndex);
-      setChainObject(fetchedChainArray[chainIndex]);
-      handleProviderChange(fetchedChainArray[chainIndex]);
-    } else {
-      chainIndex = chainArray.findIndex(
-        (chainObj) => chainObj.chainId === chainId
-      );
-      handleChainChange(chainIndex);
-    }
+  // On chainIndex change
+  useEffect(() => {
+    if (!chainArray) return;
     setErrorMessage();
-    setAddress(address);
-  };
-
-  const handleChainChange = (index) => {
-    setErrorMessage();
-    setChainIndex(index);
-    setChainObject(chainArray[index]);
-    handleProviderChange(chainArray[index]);
-  };
-
-  const handleProviderChange = (chainlistObject) => {
-    if (!chainlistObject) return;
     setConnected("connecting");
+    const chainlistObject = chainArray[chainIndex];
+
+    // Decide provider URL
     let provider;
     // Ethereum networks
     if ([1, 3, 4, 5, 42].includes(chainlistObject.chainId)) {
@@ -109,8 +83,9 @@ function App() {
         chainlistObject.chainId,
         process.env.REACT_APP_INFURA_KEY
       );
-    } else if (chainlistObject.chainId === 42161) {
-      // Arbitrum One
+    }
+    // Arbitrum One
+    else if (chainlistObject.chainId === 42161) {
       provider = new ethers.providers.JsonRpcProvider(
         "https://arbitrum-mainnet.infura.io/v3/" +
           process.env.REACT_APP_INFURA_KEY,
@@ -139,6 +114,13 @@ function App() {
 
         setConnected("not connected");
       });
+  }, [chainIndex, chainArray]);
+
+  const chainIdToIndex = (id) => {
+    const chainIndex = chainArray.findIndex(
+      (chainObj) => chainObj.chainId === id
+    );
+    return chainIndex;
   };
 
   const handleAddressChange = (e) => {
@@ -208,7 +190,7 @@ function App() {
         return setErrorMessage(err.message);
       }
     }
-    if (code == "0x") {
+    if (code === "0x") {
       return setErrorMessage("No contract found at the address");
     }
     setByteCode(code);
@@ -253,7 +235,7 @@ function App() {
             alt="Solidity logo"
           />
 
-          <h1 className="mt-4 text-2xl md:text-5xl font-medium vt323">
+          <h1 className="mt-4 text-2xl md:text-5xl font-medium vt323 text-center">
             Solidity metadata.json playground
           </h1>
           <div className="mt-2">
@@ -266,7 +248,7 @@ function App() {
                     value: i,
                   }))}
                   value={chainIndex}
-                  onChange={handleChainChange}
+                  onChange={(index) => setChainIndex(index)}
                 />
                 <div className="text-xs text-gray-600 text-center mt-1">
                   Network list from{" "}
@@ -274,6 +256,7 @@ function App() {
                     className="underline hover:text-gray-900"
                     href="https://github.com/ethereum-lists/chains"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     ethereum-lists/chains
                   </a>
@@ -315,7 +298,7 @@ function App() {
                 <input
                   type="text"
                   id="input-address"
-                  class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
+                  className=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
                   name="address"
                   placeholder="0x34a...456d"
                   value={address}
@@ -339,22 +322,20 @@ function App() {
                 <div className="flex flex-wrap justify-center items-center">
                   {/* <ul> */}
                   {nonrandomContracts.map((contract, i) => (
-                    <a
-                      className="mx-1 hover:underline cursor-pointer"
-                      onClick={() =>
-                        handleChainAndContractChange(
-                          contract.chainId,
-                          contract.address
-                        )
-                      }
+                    <button
+                      onClick={() => {
+                        setAddress(contract.address);
+                        const index = chainIdToIndex(contract.chainId);
+                        setChainIndex(index);
+                      }}
+                      key={`exampleContract-${i}`}
+                      className="mx-1 py-2 px-4 my-1 bg-ceruleanBlue-10 hover:bg-ceruleanBlue-100 hover:text-white text-ceruleanBlue-100 transition ease-in duration-100 text-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
                     >
-                      <button className="py-2 px-4 my-1 bg-ceruleanBlue-10 hover:bg-ceruleanBlue-100 hover:text-white text-ceruleanBlue-100 transition ease-in duration-100 text-center text-sm focus:outline-none focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
-                        {contract.name}
-                        <div className="text-xs text-gray-500">
-                          {contract.info}
-                        </div>
-                      </button>
-                    </a>
+                      {contract.name}
+                      <div className="text-xs text-gray-500">
+                        {contract.info}
+                      </div>
+                    </button>
                   ))}
                   {/* </ul> */}
                 </div>
@@ -371,7 +352,7 @@ function App() {
                 <textarea
                   type="text"
                   id="input-address"
-                  class=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
+                  className=" rounded-lg border-transparent flex-1 appearance-none border border-ceruleanBlue-40 w-full py-2 px-4 bg-ceruleanBlue-10 text-ceruleanBlue-130 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-ceruleanBlue-100 focus:border-transparent"
                   name="address"
                   placeholder="0x608060405234801561001057600080fd5b5061012f8061002060..."
                   value={customByteCode}

@@ -39,8 +39,8 @@ const SourcifyButton = ({ chain, address }) => {
       className="flex justify-center items-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:cursor-default disabled:opacity-50 disabled:text-gray-500"
       disabled={!match}
     >
-      <img src={logo} width={16} className="mr-1" />
-      <a href={url} target="_blank">
+      <img src={logo} width={16} className="mr-1" alt="Sourcify Logo" />
+      <a href={url} target="_blank" rel="noreferrer">
         {match ? "View on Sourcify" : "Not found on Sourcify"}
       </a>
     </button>

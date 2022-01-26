@@ -155,6 +155,7 @@ export default function Modal({
                                 -4
                               )}`}
                               target="_blank"
+                              rel="noreferrer"
                             >
                               See on CBOR Playground
                             </a>

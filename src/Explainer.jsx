@@ -43,6 +43,7 @@ export default function Explainer(props) {
             href="https://docs.soliditylang.org/en/latest/metadata.html"
             target="_blank"
             className="text-gray-600 text-sm"
+            rel="noreferrer"
           >
             (See in Solidity docs)
           </a>
@@ -77,6 +78,7 @@ export default function Explainer(props) {
               className="underline"
               href="https://goerli.etherscan.io/address/0x00878Ac0D6B8d981ae72BA7cDC967eA0Fae69df4#code"
               target="_blank"
+              rel="noreferrer"
             >
               0x00878Ac0D6B8d981ae72BA7cDC967eA0Fae69df4 (Görli)
             </a>
@@ -100,6 +102,7 @@ export default function Explainer(props) {
                 href="https://en.wikipedia.org/wiki/CBOR"
                 target="_blank"
                 className="underline"
+                rel="noreferrer"
               >
                 CBOR
               </a>{" "}
@@ -127,6 +130,7 @@ export default function Explainer(props) {
                 <a
                   href="https://cbor.me/?bytes=a2646970667358221220c019e4614043d8adc295c3046ba5142c603ab309adeef171f330c51c38f1498964736f6c63430008040033  "
                   target="_blank"
+                  rel="noreferrer"
                 >
                   See on CBOR Playground
                 </a>
@@ -140,6 +144,7 @@ export default function Explainer(props) {
             className="underline"
             href="https://github.com/multiformats/multibase"
             target="_blank"
+            rel="noreferrer"
           >
             multibase
           </a>{" "}
@@ -153,6 +158,7 @@ export default function Explainer(props) {
           <a
             href="https://cid.ipfs.io/#QmbGXtNqvZYEcbjK6xELyBQGEmzqXPDqyJNoQYjJPrST9S"
             target="_blank"
+            rel="noreferrer"
             className="text-gray-500 text-sm"
           >
             (See the breakdown of the cid)
@@ -172,6 +178,7 @@ export default function Explainer(props) {
                 href="https://ipfs.io/ipfs/QmbGXtNqvZYEcbjK6xELyBQGEmzqXPDqyJNoQYjJPrST9S"
                 target="_blank"
                 className="text-ceruleanBlue-100 hover:underline"
+                rel="noreferrer"
               >
                 https://ipfs.io/ipfs/QmbGXtNqvZYEcbjK6xELyBQGEmzqXPDqyJNoQYjJPrST9S
               </a>
@@ -196,7 +203,7 @@ export default function Explainer(props) {
           </p>
           <p>
             This is what we are doing at{" "}
-            <a href="https://sourcify.dev" target="_blank">
+            <a href="https://sourcify.dev" target="_blank" rel="noreferrer">
               Sourcify
             </a>
             . For more information check out the{" "}
@@ -204,6 +211,7 @@ export default function Explainer(props) {
               href="https://blog.soliditylang.org/2020/06/25/sourcify-faq/"
               target="_blank"
               className="underline"
+              rel="noreferrer"
             >
               Sourcify F.A.Q.
             </a>{" "}
@@ -246,9 +254,9 @@ $ cat MyContract.json
 {
   "contractName": "MyToken",
   "abi": [...]
-  “metadata”: "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\
+  “metadata”: "{\\"compiler\\":{\\"version\\":\\"0.8.4+commit.c7e474f2\\"},\\"language\\":\\"Solidity\\",\\"output\\":{\\"abi\\":[{\\"inputs\\":[{\\"internalType\\":\\"string\\",\\"name\\":\\"name\\",\\"type\\":\\"string\\"},{\\
   ....
-,\"version\":1}",
+,\\"version\\":1}",
   “bytecode”: “...”
 ...
 }
@@ -259,8 +267,8 @@ $ cat MyContract.json
           <div className="mt-8">
             <h2 className={h2Class}>Hardhat</h2>
             <p className="mt-2">
-              With Hardhat version >2.8.0 the metadata of contracts are output
-              in the build-info files
+              With Hardhat version &gt;2.8.0 the metadata of contracts are
+              output in the build-info files
             </p>
             <SyntaxHighlighter
               language="bash"
@@ -286,7 +294,7 @@ $ cat 901568e56d422b1e1e3f64004cb4dd6e.json
           ],
           "evm": {
           },
-          "metadata": "{\"compiler\":{\"version\":\"0.8.6+commit.11564f7e\"},\"language\":\"Solidity\",\"output...
+          "metadata": "{\\"compiler\\":{\\"version\\":\\"0.8.6+commit.11564f7e\\"},\\"language\\":\\"Solidity\\",\\"output...
   } 
 `}
             </SyntaxHighlighter>

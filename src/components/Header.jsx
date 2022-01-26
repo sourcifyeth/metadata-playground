@@ -7,11 +7,12 @@ const Header = () => {
         href="https://sourcify.dev"
         target="_blank"
         className="py-4 flex flex-row items-center"
+        rel="noreferrer"
       >
         <img src="/logo.svg" className="h-16 p-2 rounded-full" alt="logo" />
         <span className="vt323 text-3xl text-gray-700 ml-2">sourcify</span>
       </a>
-      <div className="header__social-icons" className="flex flex-row">
+      <div className="header__social-icons flex flex-row">
         <a
           href="https://twitter.com/sourcifyeth"
           target="_blank"

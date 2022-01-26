@@ -28,12 +28,18 @@ const BlockExplorerButton = ({ chain, address }) => {
   if (Object.keys(etherscanChains).includes(chain.toString())) {
     return (
       <Button>
-        <img src={etherscanLogo} width={16} className="mr-1" />
+        <img
+          src={etherscanLogo}
+          width={16}
+          className="mr-1"
+          alt="etherscan logo"
+        />
         <a
           href={`https://${
             etherscanChains[chain] || ""
           }/address/${address}#code`}
           target="_blank"
+          rel="noreferrer"
           // style={{ lineHeight: 0 }}
         >
           View on Etherscan
@@ -45,10 +51,16 @@ const BlockExplorerButton = ({ chain, address }) => {
   else if (Object.keys(blockscoutDomains).includes(chain.toString())) {
     return (
       <Button>
-        <img src={blockscoutLogo} width={16} className="mr-1" />
+        <img
+          src={blockscoutLogo}
+          width={16}
+          className="mr-1"
+          alt="blockscout logo"
+        />
         <a
           href={`https://blockscout.com/${blockscoutDomains[chain]}/address/${address}/contracts`}
           target="_blank"
+          rel="noreferrer"
           // style={{ lineHeight: 0 }}
         >
           View on Blockscout
