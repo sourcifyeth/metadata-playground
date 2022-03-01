@@ -225,7 +225,7 @@ function App() {
           decodedCbor={decodedCbor}
           metadataHash={metadataHash}
           address={address}
-          chainObject={chainObject}
+          chainObject={chainArray[chainIndex]}
         />
         <div className="flex flex-col items-center">
           <img
