@@ -310,7 +310,7 @@ function App() {
                   className="mt-1 py-2 px-4 w-full bg-ceruleanBlue-100 hover:bg-ceruleanBlue-130 focus:ring-ceruleanBlue-70 focus:ring-offset-ceruleanBlue-10 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg disabled:opacity-50 disabled:cursor-default"
                   disabled={!(connected === "connected")}
                 >
-                  Decode
+                  Get Bytecode and Decode
                 </button>
               </div>
               <div className="mt-2 text-center">
