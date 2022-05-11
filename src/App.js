@@ -96,7 +96,11 @@ function App() {
     ) {
       provider = new ethers.providers.JsonRpcProvider(
         INFURA_URLS[chainlistObject.chainId] + process.env.REACT_APP_INFURA_KEY,
-        chainlistObject
+        {
+          name: chainlistObject.name,
+          chainId: chainlistObject.chainId,
+          ensAddress: chainlistObject?.ens?.registry,
+        }
       );
     } else {
       try {

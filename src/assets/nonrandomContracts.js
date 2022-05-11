@@ -61,7 +61,7 @@ export default [
   },
   {
     name: "some-old-contract",
-    info: "without appended CBOR",
+    info: "without appended CBOR (will fail)",
     chainId: 1,
     address: "0x9af09991ad63814e53ffc1bccf213ee74027608b",
   },
