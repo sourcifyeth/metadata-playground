@@ -1,4 +1,4 @@
-import { GithubIcon, GitterIconOutlined, TwitterIcon } from "../assets/icons";
+import { GithubIcon } from "../assets/icons";
 
 const Header = () => {
   return (
@@ -14,28 +14,12 @@ const Header = () => {
       </a>
       <div className="header__social-icons flex flex-row">
         <a
-          href="https://twitter.com/sourcifyeth"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-2 text-gray-600"
-        >
-          <TwitterIcon />
-        </a>
-        <a
-          href="https://github.com/ethereum/sourcify"
+          href="https://github.com/sourcifyeth/metadata-playground"
           target="_blank"
           className="ml-2 text-gray-600"
           rel="noopener noreferrer"
         >
           <GithubIcon />
-        </a>
-        <a
-          href="https://gitter.im/ethereum/source-verify"
-          className="ml-2 text-gray-600"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <GitterIconOutlined />
         </a>
       </div>
     </header>

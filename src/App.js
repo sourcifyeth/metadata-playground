@@ -45,6 +45,17 @@ function App() {
   const [chainArray, setChainArray] = useState(); // chainId.network/chains.json result
   const [connected, setConnected] = useState("not connected");
 
+  const INFURA_URLS = {
+    1: "https://mainnet.infura.io/v3/",
+    3: "https://ropsten.infura.io/v3/",
+    4: "https://rinkeby.infura.io/v3/",
+    5: "https://goerli.infura.io/v3/",
+    42: "https://kovan.infura.io/v3/",
+    42161: "https://arbitrum-mainnet.infura.io/v3/",
+    11297108099: "https://palm-testnet.infura.io/v3/",
+    11297108109: "https://palm-mainnet.infura.io/v3/",
+  };
+
   // On Mount
   useEffect(() => {
     const queryString = window.location.search;
@@ -77,19 +88,15 @@ function App() {
 
     // Decide provider URL
     let provider;
-    // Ethereum networks
-    if ([1, 3, 4, 5, 42].includes(chainlistObject.chainId)) {
-      provider = new ethers.providers.InfuraProvider(
-        chainlistObject.chainId,
-        process.env.REACT_APP_INFURA_KEY
-      );
-    }
-    // Arbitrum One
-    else if (chainlistObject.chainId === 42161) {
+    // INFURA with Ethereum networks, Arbitrum, Palm-testnet, Palm
+    if (
+      [1, 3, 4, 5, 42, 42161, 11297108099, 11297108109].includes(
+        chainlistObject.chainId
+      )
+    ) {
       provider = new ethers.providers.JsonRpcProvider(
-        "https://arbitrum-mainnet.infura.io/v3/" +
-          process.env.REACT_APP_INFURA_KEY,
-        { ensAddress: chainlistObject?.ens?.registry }
+        INFURA_URLS[chainlistObject.chainId] + process.env.REACT_APP_INFURA_KEY,
+        chainlistObject
       );
     } else {
       try {
