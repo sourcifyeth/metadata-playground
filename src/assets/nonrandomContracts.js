@@ -1,6 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 export default [
   {
+    name: "ETH 2.0",
+    info: "Deposit Contract",
+    chainId: 1,
+    address: "0x00000000219ab540356cBB839Cbe05303d7705Fa",
+  },
+  {
     name: "SynthetixAMM",
     info: "on Sourcify",
     chainId: 1,
@@ -11,11 +17,6 @@ export default [
     info: "no metadata hash",
     chainId: 1,
     address: "0xe592427a0aece92de3edee1f18e0157c05861564",
-  },
-  {
-    name: "ENS",
-    chainId: 1,
-    address: "0x283af0b28c62c092c9727f1ee09c02ca627eb7f5",
   },
   {
     name: "XMON",
