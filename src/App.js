@@ -68,8 +68,10 @@ function App() {
         setChainArray(json);
         setChainObject(json[0]);
         setChainIndex(0);
-        if (paramAddress && paramChainId) {
+        if (paramAddress) {
           setAddress(paramAddress);
+        }
+        if (paramChainId) {
           const chainIndex = json.findIndex(
             (chainObj) => chainObj.chainId === paramChainId
           );
