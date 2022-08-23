@@ -9,6 +9,10 @@ const highlightStyle = " bg-teal-800 text-gray-50";
 const cborHighlightStyle = " bg-yellow-800 text-gray-50";
 
 const SolcVersion = ({ hexversion }) => {
+  if (hexversion.length > 8) {
+    // e.g. not "0x00060b" but literal version string
+    return hexversion;
+  }
   const rawHex = hexversion.slice(2); // remove 0x
   const rawHexFields = rawHex.match(/.{1,2}/g); // split into two chars
   const decimalFields = rawHexFields
