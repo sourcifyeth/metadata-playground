@@ -5,7 +5,7 @@ import codeStyle from "react-syntax-highlighter/dist/esm/styles/hljs/mono-blue";
 import IPFSLogo from "../assets/IPFS_logo.png";
 SyntaxHighlighter.registerLanguage("json", jsonLang);
 
-const IPFS_GATEWAY = "https://ipfs.ethdevops.io/ipfs";
+const IPFS_GATEWAY = "https://ipfs.io/ipfs";
 
 const IPFSButton = ({ metadataHashStr }) => {
   return (
