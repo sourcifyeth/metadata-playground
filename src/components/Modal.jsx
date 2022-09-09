@@ -24,9 +24,15 @@ const SolcVersion = ({ hexversion }) => {
 const ByteCodeInput = ({ children, cborByteLength }) => {
   // autoscroll to dummy bottom element
   const bottom = useRef();
-  useEffect(() =>
-    bottom.current.scrollIntoView({ behavior: "smooth", block: "nearest" })
-  );
+  useEffect(() => {
+    bottom.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    // Scroll again to fix when sometimes it does not scroll fully to the bottom.
+    setTimeout(
+      () =>
+        bottom.current.scrollIntoView({ behavior: "smooth", block: "nearest" }),
+      200
+    );
+  });
   // If cborByteLength === 0, don't highlight.
   const cborStrLength = 2 * cborByteLength;
   const unhighlighted = cborByteLength
