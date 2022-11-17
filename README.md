@@ -7,7 +7,7 @@ This tool allows you to see the [Solidity metadata](https://docs.soliditylang.or
 ## Usage
 
 - Choose network and input the contract address to see its deployed bytecode. Some example contracts provided.
-  - You can also pass the `address` and/or `chainId` in the query parameters as <https://playground.sourcify.dev/?address=0xb36c99e9a86ff467bbf4312ae852874f7a6fe57d&chainId=69>
+  - You can also pass the `address` and/or `chainId` in the query parameters as <https://playground.sourcify.dev/?address=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&chainId=1>
 - In the popup you will see the contract's deployed bytecode. It will be automatically scrolled to the end where [CBOR encoded data](https://docs.soliditylang.org/en/latest/metadata.html#encoding-of-the-metadata-hash-in-the-bytecode) is appended.
 - The CBOR decoding will be highlighted with the sections indicating its length and its contents.
 - The CBOR encoded data will be decoded. It will differ for each contract but usually this will contain the Solidity version and the IPFS or Swarm hash.
