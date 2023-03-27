@@ -173,7 +173,6 @@ function App() {
 
   const decodeBytecodeCbor = (byteCode) => {
     let decodedCbor;
-    console.log("decoding bytecode: " + byteCode.slice(0, 50));
     const formattedBytecode = byteCode.startsWith("0x")
       ? byteCode.trim()
       : "0x" + byteCode.trim();
