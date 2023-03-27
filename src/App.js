@@ -64,15 +64,31 @@ function App() {
     const paramChainId = parseInt(urlParams.get("chainId"));
     fetch("https://chainid.network/chains.json")
       .then((res) => res.json())
-      .then((json) => {
-        setChainArray(json);
-        setChainObject(json[0]);
+      .then((arr) => {
+        const ethereumChainIds = [1, 5, 11155111];
+        // move ethereum networks to the top
+        const sortedArr = arr.sort((a, b) => {
+          if (
+            ethereumChainIds.includes(a.chainId) &&
+            ethereumChainIds.includes(b.chainId)
+          ) {
+            return a.chainId - b.chainId;
+          } else if (ethereumChainIds.includes(a.chainId)) {
+            return -1;
+          } else if (ethereumChainIds.includes(b.chainId)) {
+            return 1;
+          } else {
+            return a.chainId - b.chainId;
+          }
+        });
+        setChainArray(sortedArr);
+        setChainObject(sortedArr[0]);
         setChainIndex(0);
         if (paramAddress) {
           setAddress(paramAddress);
         }
         if (paramChainId) {
-          const chainIndex = json.findIndex(
+          const chainIndex = sortedArr.findIndex(
             (chainObj) => chainObj.chainId === paramChainId
           );
           setChainIndex(chainIndex);
