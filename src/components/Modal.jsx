@@ -79,11 +79,11 @@ export default function Modal({
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 md:mx-24 "
+        className="fixed z-10 inset-0 sm:mx-24 my-8"
         initialFocus={focusButtonRef}
         onClose={onClose}
       >
-        <div className="flex justify-center items-center h-screen py-4 px-4 pb-4 text-center sm:block sm:p-0 text-sm md:text-base">
+        <div className="flex justify-center items-center h-screen py-4 px-4 pb-4 text-center sm:p-0 text-sm md:text-base">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

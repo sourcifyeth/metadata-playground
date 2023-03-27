@@ -1,6 +1,6 @@
 import ContractCallDecoder from "@ethereum-sourcify/contract-call-decoder";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import nonrandomContracts from "./assets/nonrandomContracts";
 import Connecting from "./components/Connecting";
@@ -207,23 +207,26 @@ function App() {
     }
   };
 
-  const handleSubmitAddress = async (e) => {
-    e.preventDefault();
-    setErrorMessage();
-    let code;
-    try {
-      code = await provider.getCode(address);
-    } catch (err) {
-      if (err) {
-        return setErrorMessage(err.message);
+  const handleSubmitAddress = useCallback(
+    async (e) => {
+      if (e) e.preventDefault();
+      setErrorMessage();
+      let code;
+      try {
+        code = await provider.getCode(address);
+      } catch (err) {
+        if (err) {
+          return setErrorMessage(err.message);
+        }
       }
-    }
-    if (code === "0x") {
-      return setErrorMessage("No contract found at the address");
-    }
-    setByteCode(code);
-    decodeBytecodeCbor(code);
-  };
+      if (code === "0x") {
+        return setErrorMessage("No contract found at the address");
+      }
+      setByteCode(code);
+      decodeBytecodeCbor(code);
+    },
+    [address, provider]
+  );
 
   const handleDecodeCustomByteCode = (e) => {
     e.preventDefault();
@@ -239,6 +242,19 @@ function App() {
     setDecodedCbor(null);
     setByteCode(null);
   };
+
+  // On provider change, if address and chainId query params are present, handleSubmitAddress
+  useEffect(() => {
+    if (!provider) return;
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const paramAddress = urlParams.get("address");
+    const paramChainId = parseInt(urlParams.get("chainId"));
+    if (paramAddress && paramChainId) {
+      handleSubmitAddress();
+    }
+  }, [provider, handleSubmitAddress]);
+
   if (!chainArray) {
     return "Loading";
   }

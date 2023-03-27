@@ -15,7 +15,6 @@ const SourcifyButton = ({ chain, address }) => {
       .catch((err) => {
         fetch(sourcifyPartialMatchUrl)
           .then((res) => {
-            console.log("Checking partial");
             if (res.status === 200) {
               setMatch("partial");
             }
