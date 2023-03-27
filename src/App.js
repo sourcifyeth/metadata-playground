@@ -62,6 +62,7 @@ function App() {
     const urlParams = new URLSearchParams(queryString);
     const paramAddress = urlParams.get("address");
     const paramChainId = parseInt(urlParams.get("chainId"));
+    const paramBytecode = urlParams.get("bytecode");
     fetch("https://chainid.network/chains.json")
       .then((res) => res.json())
       .then((arr) => {
@@ -92,6 +93,9 @@ function App() {
             (chainObj) => chainObj.chainId === paramChainId
           );
           setChainIndex(chainIndex);
+        }
+        if (paramBytecode) {
+          setCustomByteCode(paramBytecode);
         }
       })
       .catch(() => alert("Couldn't fetch networks"));
@@ -180,7 +184,7 @@ function App() {
       if (err.message.startsWith("Unexpected data")) {
         setErrorMessage("Unable to decode bytecode with CBOR");
       } else {
-        setErrorMessage(err.message);
+        setErrorMessage("Unable to decode bytecode with CBOR\n" + err.message);
       }
       return null;
     }
@@ -228,13 +232,16 @@ function App() {
     [address, provider]
   );
 
-  const handleDecodeCustomByteCode = (e) => {
-    e.preventDefault();
-    console.log("Decoding custom");
-    setAddress("");
-    setByteCode(customByteCode);
-    decodeBytecodeCbor(customByteCode);
-  };
+  const handleDecodeCustomByteCode = useCallback(
+    (e) => {
+      if (e) e.preventDefault();
+      console.log("Decoding custom");
+      setAddress("");
+      setByteCode(customByteCode);
+      decodeBytecodeCbor(customByteCode);
+    },
+    [customByteCode]
+  );
 
   const handleModalClose = () => {
     setModalOpen(false);
@@ -254,6 +261,17 @@ function App() {
       handleSubmitAddress();
     }
   }, [provider, handleSubmitAddress]);
+
+  // Submit automatically if bytecode is present in query params
+  useEffect(() => {
+    if (!customByteCode) return;
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const paramBytecode = urlParams.get("bytecode");
+    if (paramBytecode) {
+      handleDecodeCustomByteCode();
+    }
+  }, [customByteCode, handleDecodeCustomByteCode]);
 
   if (!chainArray) {
     return "Loading";
