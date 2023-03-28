@@ -1,61 +1,54 @@
-import { useEffect, useState } from "react";
-import IPFSLogo from "../assets/IPFS_logo.png";
+import { useCallback, useEffect, useState } from "react";
 import CollapsibleCode from "./CollapsibleCode";
+import IPFSButton from "./IPFSButton";
 import Sources from "./Sources";
 
 const IPFS_GATEWAY = "https://ipfs.io/ipfs";
 
-const IPFSButton = ({ metadataHashStr }) => {
-  return (
-    <div className="">
-      <a
-        href={"https://ipfs.io/ipfs/" + metadataHashStr}
-        target="_blank"
-        className="rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:w-auto sm:text-sm"
-        rel="noreferrer"
-      >
-        <span>
-          {" "}
-          View on{" "}
-          <img
-            src={IPFSLogo}
-            className="inline-block mx-1 w-auto"
-            style={{ height: "1.2em" }}
-            alt="Ipfs Logo"
-          />{" "}
-        </span>
-      </a>
-    </div>
-  );
-};
 const FetchedMetadata = ({
   metadataHashStr,
   metadataJson,
   setMetadataJson,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const loadMetadata = useCallback(() => {
     const controller = new AbortController();
     setIsLoading(true);
     setMetadataJson(null);
     // 15 second timeout:
     const timeoutId = setTimeout(() => controller.abort(), 15000);
+    setError("");
     return fetch(`${IPFS_GATEWAY}/${metadataHashStr}`, {
       signal: controller.signal,
     })
-      .then((res) => res.json())
-      .then((json) => setMetadataJson(json))
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error(
+          `IPFS gateway ${IPFS_GATEWAY} returned status code ${res.status}`
+        );
+      })
+      .then((json) => {
+        setError("");
+        setMetadataJson(json);
+      })
       .catch((err) => {
+        setError(err.message);
         clearTimeout(timeoutId);
         setMetadataJson(null);
       })
       .finally(() => setIsLoading(false));
   }, [metadataHashStr]);
 
+  useEffect(() => {
+    return loadMetadata();
+  }, [loadMetadata]);
+
   if (!metadataHashStr) return null;
   return (
     <div className="w-full mt-2">
+      <div className="mt-1 text-sm text-red-400">{error}</div>
       {metadataJson ? (
         <div>
           <div className="mt-1">Metadata file available on IPFS!</div>
@@ -72,7 +65,15 @@ const FetchedMetadata = ({
               <span>Looking for the metadata file on IPFS</span>
             </div>
           ) : (
-            "Couldn't find the metadata file on IPFS"
+            <div>
+              <span>Couldn't find the metadata file on IPFS </span>
+              <button
+                className="ml-1 py-2 px-4 bg-transparent hover:bg-ceruleanBlue-100 hover:text-gray-50  text-ceruleanBlue-100 transition ease-in duration-200 text-center text-base font-semibold focus:outline-none rounded-lg disabled:opacity-50 disabled:cursor-default"
+                onClick={loadMetadata}
+              >
+                Reload
+              </button>
+            </div>
           )}
         </div>
       )}
