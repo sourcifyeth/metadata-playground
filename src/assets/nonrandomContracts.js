@@ -7,10 +7,10 @@ export default [
     address: "0x00000000219ab540356cBB839Cbe05303d7705Fa",
   },
   {
-    name: "SynthetixAMM",
+    name: "MSOW",
     info: "on Sourcify",
     chainId: 1,
-    address: "0x5ed4a410A612F2fe625a8F3cB4d70f197fF8C8be",
+    address: "0x07880D44b0f7b75464ad18fc2b980049c40A8bc3",
   },
   {
     name: "Uniswap",
