@@ -208,12 +208,12 @@ export default function Explainer(props) {
             </a>
             . For more information check out the{" "}
             <a
-              href="https://blog.soliditylang.org/2020/06/25/sourcify-faq/"
+              href="https://docs.sourcify.dev/"
               target="_blank"
               className="underline"
               rel="noreferrer"
             >
-              Sourcify F.A.Q.
+              Sourcify Docs
             </a>{" "}
             article.
           </p>
