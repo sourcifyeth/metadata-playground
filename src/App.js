@@ -113,7 +113,7 @@ function App() {
     let provider;
     // INFURA with Ethereum networks, Arbitrum, Palm-testnet, Palm
     if (
-      [1, 3, 4, 5, 42, 42161, 11297108099, 11297108109].includes(
+      [1, 3, 4, 5, 11155111, 42, 42161, 11297108099, 11297108109].includes(
         chainlistObject.chainId
       )
     ) {
