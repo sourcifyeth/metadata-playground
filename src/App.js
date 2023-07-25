@@ -50,6 +50,7 @@ function App() {
     3: "https://ropsten.infura.io/v3/",
     4: "https://rinkeby.infura.io/v3/",
     5: "https://goerli.infura.io/v3/",
+    11155111: "https://sepolia.infura.io/v3/",
     42: "https://kovan.infura.io/v3/",
     42161: "https://arbitrum-mainnet.infura.io/v3/",
     11297108099: "https://palm-testnet.infura.io/v3/",
