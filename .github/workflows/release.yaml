@@ -48,11 +48,12 @@ jobs:
         with:
           token: ${{ secrets.GH_DISPATCH_TOKEN }}
           repository: sourcifyeth/infra
-          event-type: deploy-playground
+          event-type: deploy
           client-payload: >-
             {
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}",
+              "component": "playground",
               "environment": "staging",
               "image_tag": "${{ github.ref_name }}@${{ steps.buildpush.outputs.digest }}"
             }
