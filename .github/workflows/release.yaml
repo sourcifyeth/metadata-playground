@@ -43,7 +43,7 @@ jobs:
           echo $DIGEST;
           echo $IMAGE_ID;
           echo $METADATA;
-      - name: Dispatch deployment
+      - name: Dispatch deployment (staging)
         uses: peter-evans/repository-dispatch@26b39ed245ab8f31526069329e112ab2fb224588
         with:
           token: ${{ secrets.GH_DISPATCH_TOKEN }}
@@ -55,5 +55,19 @@ jobs:
               "sha": "${{ github.sha }}",
               "component": "playground",
               "environment": "staging",
+              "image_tag": "${{ github.ref_name }}@${{ steps.buildpush.outputs.digest }}"
+            }
+      - name: Dispatch deployment (production)
+        uses: peter-evans/repository-dispatch@26b39ed245ab8f31526069329e112ab2fb224588
+        with:
+          token: ${{ secrets.GH_DISPATCH_TOKEN }}
+          repository: sourcifyeth/infra
+          event-type: deploy
+          client-payload: >-
+            {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "component": "playground",
+              "environment": "production",
               "image_tag": "${{ github.ref_name }}@${{ steps.buildpush.outputs.digest }}"
             }
