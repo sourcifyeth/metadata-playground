@@ -332,6 +332,56 @@ solidity: {
             </SyntaxHighlighter>
           </div>
         </div>
+
+        <div className="mt-8">
+            <h2 className={h2Class}>Foundry</h2>
+            <p className="mt-2">
+              When using Foundry, metadata can be output to separate files using
+              Forge's `--extra-output-files` flag with the `metadata` key{" "}
+            </p>
+            <SyntaxHighlighter
+              language="bash"
+              style={terminalStyle}
+              className="text-xs md:text-sm"
+            >
+              {`$ forge build --extra-output-files metadata
+$ cd out/MyContract.sol
+$ cat MyContract.metadata.json
+{
+  "compiler": {
+    "version": "0.8.19+commit.7dd6d404"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [{
+      ...
+    }]
+  },
+  "settings": {
+    "compilationTarget": {
+      ...
+    },
+    "evmVersion": "paris",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      ...
+    },
+    "remappings": [
+      ...
+    ]
+  },
+  "sources": {
+    ...
+  },
+  "version": 1
+}
+`}
+          </SyntaxHighlighter>
+        </div>
+        
         <div className="mt-8">
           You can directly use the Hardhat and Truffle output files in Sourcify
           without extracting it manually. Sourcify does the work for you
