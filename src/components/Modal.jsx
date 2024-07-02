@@ -61,6 +61,7 @@ export default function Modal({
   metadataHash,
   address,
   chainObject,
+  sourcifyChains,
 }) {
   const focusButtonRef = useRef();
   useEffect(() => {
@@ -133,6 +134,7 @@ export default function Modal({
                           <BlockExplorerButton
                             chain={chain}
                             address={address}
+                            sourcifyChains={sourcifyChains}
                           />
                         </div>
                       </div>

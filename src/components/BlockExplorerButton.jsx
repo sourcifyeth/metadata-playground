@@ -1,23 +1,24 @@
 import blockscoutLogo from "../assets/blockscout.png";
 import etherscanLogo from "../assets/etherscan.webp";
-const BlockExplorerButton = ({ chain, address }) => {
-  const etherscanChains = {
-    1: "etherscan.io",
-    3: "ropsten.etherscan.io",
-    4: "rinkeby.etherscan.io",
-    5: "goerli.etherscan.io",
-    10: "optimistic.etherscan.io",
-    56: "bscscan.com",
-    97: "testnet.bscscan.com",
-    69: "kovan-optimistic.etherscan.io",
-    137: "polygonscan.com",
-    80001: "mumbai.polygonscan.com",
-  };
+const BlockExplorerButton = ({ chain, address, sourcifyChains }) => {
+  const sourcifyChainObject = sourcifyChains.find((sourcifyChain) => sourcifyChain.chainId === chain);
+  // Filter chains that include an 'etherscanAPI' and transform their URLs to exclude the api part in https://api.etherscan.io/api
+  let etherscanURL;
+
+  if (sourcifyChainObject?.etherscanAPI) {
+    const url = new URL(sourcifyChainObject.etherscanAPI);
+    const subdomains = url.hostname.split("."); // Split the hostname into parts
+    const cleanedHostname = subdomains.slice(1).join("."); // Join parts back without the first subdomain
+    etherscanURL = `https://${cleanedHostname}`; // Prepend 'https://' to the cleaned hostname, ignoring any paths
+  }
+
+  console.log(etherscanURL);
 
   const blockscoutDomains = {
     100: "xdai/mainnet",
     77: "poa/core",
   };
+
   const Button = (props) => (
     <button
       className="flex justify-center items-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:cursor-default disabled:opacity-50 disabled:text-gray-500"
@@ -25,19 +26,12 @@ const BlockExplorerButton = ({ chain, address }) => {
     ></button>
   );
   // Etherscan
-  if (Object.keys(etherscanChains).includes(chain.toString())) {
+  if (etherscanURL) {
     return (
       <Button>
-        <img
-          src={etherscanLogo}
-          width={16}
-          className="mr-1"
-          alt="etherscan logo"
-        />
+        <img src={etherscanLogo} width={16} className="mr-1" alt="etherscan logo" />
         <a
-          href={`https://${
-            etherscanChains[chain] || ""
-          }/address/${address}#code`}
+          href={`${etherscanURL}/address/${address}#code`}
           target="_blank"
           rel="noreferrer"
           // style={{ lineHeight: 0 }}
@@ -51,12 +45,7 @@ const BlockExplorerButton = ({ chain, address }) => {
   else if (Object.keys(blockscoutDomains).includes(chain.toString())) {
     return (
       <Button>
-        <img
-          src={blockscoutLogo}
-          width={16}
-          className="mr-1"
-          alt="blockscout logo"
-        />
+        <img src={blockscoutLogo} width={16} className="mr-1" alt="blockscout logo" />
         <a
           href={`https://blockscout.com/${blockscoutDomains[chain]}/address/${address}/contracts`}
           target="_blank"

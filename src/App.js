@@ -40,6 +40,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState();
   const [chainIndex, setChainIndex] = useState(0);
   const [chainObject, setChainObject] = useState();
+  const [sourcifyChains, setSourcifyChains] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
   const [customByteCode, setCustomByteCode] = useState();
   const [chainArray, setChainArray] = useState(); // chainId.network/chains.json result
@@ -70,10 +71,7 @@ function App() {
         const ethereumChainIds = [1, 5, 11155111];
         // move ethereum networks to the top
         const sortedArr = arr.sort((a, b) => {
-          if (
-            ethereumChainIds.includes(a.chainId) &&
-            ethereumChainIds.includes(b.chainId)
-          ) {
+          if (ethereumChainIds.includes(a.chainId) && ethereumChainIds.includes(b.chainId)) {
             return a.chainId - b.chainId;
           } else if (ethereumChainIds.includes(a.chainId)) {
             return -1;
@@ -90,9 +88,7 @@ function App() {
           setAddress(paramAddress);
         }
         if (paramChainId) {
-          const chainIndex = sortedArr.findIndex(
-            (chainObj) => chainObj.chainId === paramChainId
-          );
+          const chainIndex = sortedArr.findIndex((chainObj) => chainObj.chainId === paramChainId);
           setChainIndex(chainIndex);
         }
         if (paramBytecode) {
@@ -100,6 +96,12 @@ function App() {
         }
       })
       .catch(() => alert("Couldn't fetch networks"));
+
+    fetch("https://sourcify.dev/server/chains")
+      .then((res) => res.json())
+      .then((arr) => {
+        setSourcifyChains(arr);
+      });
   }, []);
 
   // On chainIndex change
@@ -112,11 +114,7 @@ function App() {
     // Decide provider URL
     let provider;
     // INFURA with Ethereum networks, Arbitrum, Palm-testnet, Palm
-    if (
-      [1, 3, 4, 5, 11155111, 42, 42161, 11297108099, 11297108109].includes(
-        chainlistObject.chainId
-      )
-    ) {
+    if ([1, 3, 4, 5, 11155111, 42, 42161, 11297108099, 11297108109].includes(chainlistObject.chainId)) {
       provider = new ethers.providers.JsonRpcProvider(
         INFURA_URLS[chainlistObject.chainId] + process.env.REACT_APP_INFURA_KEY,
         {
@@ -140,9 +138,7 @@ function App() {
       })
       .catch((err) => {
         chainlistObject.rpc[0]
-          ? setErrorMessage(
-              "Can't connect to the network at " + chainlistObject.rpc[0]
-            )
+          ? setErrorMessage("Can't connect to the network at " + chainlistObject.rpc[0])
           : setErrorMessage("Can't connect to the network: No RPC found");
 
         setConnected("not connected");
@@ -150,9 +146,7 @@ function App() {
   }, [chainIndex, chainArray]);
 
   const chainIdToIndex = (id) => {
-    const chainIndex = chainArray.findIndex(
-      (chainObj) => chainObj.chainId === id
-    );
+    const chainIndex = chainArray.findIndex((chainObj) => chainObj.chainId === id);
     return chainIndex;
   };
 
@@ -166,17 +160,13 @@ function App() {
     e.preventDefault();
     setErrorMessage();
     const input = e.target.value;
-    const formattedBytecode = input.startsWith("0x")
-      ? input.trim()
-      : "0x" + input.trim();
+    const formattedBytecode = input.startsWith("0x") ? input.trim() : "0x" + input.trim();
     setCustomByteCode(formattedBytecode);
   };
 
   const decodeBytecodeCbor = (byteCode) => {
     let decodedCbor;
-    const formattedBytecode = byteCode.startsWith("0x")
-      ? byteCode.trim()
-      : "0x" + byteCode.trim();
+    const formattedBytecode = byteCode.startsWith("0x") ? byteCode.trim() : "0x" + byteCode.trim();
     try {
       decodedCbor = ContractCallDecoder.decodeCborAtTheEnd(formattedBytecode);
     } catch (err) {
@@ -193,14 +183,11 @@ function App() {
       const stringifyBuffers = {}; // show buffers in hex
       Object.keys(decodedCbor).forEach((key) => {
         stringifyBuffers[key] =
-          typeof decodedCbor[key] === "boolean"
-            ? decodedCbor[key]
-            : "0x" + decodedCbor[key].toString("hex");
+          typeof decodedCbor[key] === "boolean" ? decodedCbor[key] : "0x" + decodedCbor[key].toString("hex");
       });
       setDecodedCbor(stringifyBuffers);
       try {
-        const metadataHash =
-          ContractCallDecoder.getHashFromDecodedCbor(decodedCbor);
+        const metadataHash = ContractCallDecoder.getHashFromDecodedCbor(decodedCbor);
         setMetadataHash(metadataHash);
       } catch (err) {
         setMetadataHash(null);
@@ -289,17 +276,12 @@ function App() {
           metadataHash={metadataHash}
           address={address}
           chainObject={chainArray[chainIndex]}
+          sourcifyChains={sourcifyChains}
         />
         <div className="flex flex-col items-center">
-          <img
-            className="w-12 md:w-16"
-            src={process.env.PUBLIC_URL + "/solidity.png"}
-            alt="Solidity logo"
-          />
+          <img className="w-12 md:w-16" src={process.env.PUBLIC_URL + "/solidity.png"} alt="Solidity logo" />
 
-          <h1 className="mt-2 text-2xl md:text-5xl font-medium vt323 text-center">
-            Solidity metadata.json playground
-          </h1>
+          <h1 className="mt-2 text-2xl md:text-5xl font-medium vt323 text-center">Solidity metadata.json playground</h1>
           <div className="mt-4">
             {chainArray ? (
               <div>
@@ -348,9 +330,7 @@ function App() {
                 address={address}
               /> */}
               <div className="flex justify-between">
-                <div className="text-sm md:text-base flex items-end">
-                  Enter Contract Address or ENS
-                </div>
+                <div className="text-sm md:text-base flex items-end">Enter Contract Address or ENS</div>
                 {/* <RandomContract
                   handleChainAndContractChange={handleChainAndContractChange}
                 /> */}
@@ -378,9 +358,7 @@ function App() {
               </div>
               <div className="mt-2 text-center">
                 {" "}
-                <div className="mt-4">
-                  Click to decode some example contracts:
-                </div>
+                <div className="mt-4">Click to decode some example contracts:</div>
                 <div className="flex flex-wrap justify-center items-center">
                   {/* <ul> */}
                   {nonrandomContracts.map((contract, i) => (
@@ -394,9 +372,7 @@ function App() {
                       className="mx-1 py-2 px-4 my-1 bg-ceruleanBlue-10 hover:bg-ceruleanBlue-100 hover:text-white text-ceruleanBlue-100 transition ease-in duration-100 text-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
                     >
                       {contract.name}
-                      <div className="text-xs text-gray-500">
-                        {contract.info}
-                      </div>
+                      <div className="text-xs text-gray-500">{contract.info}</div>
                     </button>
                   ))}
                   {/* </ul> */}
