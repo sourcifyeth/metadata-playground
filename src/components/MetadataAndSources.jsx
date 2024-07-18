@@ -5,11 +5,7 @@ import Sources from "./Sources";
 
 const IPFS_GATEWAY = "https://ipfs.io/ipfs";
 
-const FetchedMetadata = ({
-  metadataHashStr,
-  metadataJson,
-  setMetadataJson,
-}) => {
+const FetchedMetadata = ({ metadataHashStr, metadataJson, setMetadataJson }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -25,9 +21,7 @@ const FetchedMetadata = ({
     })
       .then((res) => {
         if (res.status === 200) return res.json();
-        throw new Error(
-          `IPFS gateway ${IPFS_GATEWAY} returned status code ${res.status}`
-        );
+        throw new Error(`IPFS gateway ${IPFS_GATEWAY} returned status code ${res.status}`);
       })
       .then((json) => {
         setError("");
@@ -39,7 +33,7 @@ const FetchedMetadata = ({
         setMetadataJson(null);
       })
       .finally(() => setIsLoading(false));
-  }, [metadataHashStr]);
+  }, [metadataHashStr, setMetadataJson]);
 
   useEffect(() => {
     return loadMetadata();
@@ -53,9 +47,7 @@ const FetchedMetadata = ({
         <div>
           <div className="mt-1">Metadata file available on IPFS!</div>
 
-          <CollapsibleCode language="json">
-            {JSON.stringify(metadataJson, null, 2)}
-          </CollapsibleCode>
+          <CollapsibleCode language="json">{JSON.stringify(metadataJson, null, 2)}</CollapsibleCode>
         </div>
       ) : (
         <div className="mt-2">
@@ -84,8 +76,7 @@ const FetchedMetadata = ({
 const Swarm = ({ metadataHash }) => {
   return (
     <div>
-      Since it is a Swarm link it is probably not possible to retrieve the file
-      🙁 but you can try the{" "}
+      Since it is a Swarm link it is probably not possible to retrieve the file 🙁 but you can try the{" "}
       <a
         href={"https://gateway.ethswarm.org/access/" + metadataHash.hash}
         target="_blank"
@@ -106,9 +97,7 @@ const MetadataAndSources = ({ metadataHash }) => {
   }
   return (
     <div>
-      <div className={"font-mono break-all"}>
-        {metadataHash.origin + "://" + metadataHash.hash}
-      </div>
+      <div className={"font-mono break-all"}>{metadataHash.origin + "://" + metadataHash.hash}</div>
       <p className="text-lg font-bold text-gray-900 mt-2">Metadata File</p>
       <div className="">
         {metadataHash.origin === "ipfs" ? (
