@@ -1,73 +1,35 @@
-name: Release
+name: Release on Google Bucket
 on:
   push:
     branches:
       - main
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+      id-token: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Log in to the container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        uses: actions/checkout@v4
+      - name: "auth"
+        uses: "google-github-actions/auth@v2"
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract metadata (tags, labels) for docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+          workload_identity_provider: "projects/1019539084286/locations/global/workloadIdentityPools/github/providers/sourcify"
+          service_account: "sourcify-playground-cd@sourcify-project.iam.gserviceaccount.com"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      - name: Build and push docker image
-        id: buildpush
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+          node-version: "22.4"
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: "upload-files"
+        uses: "google-github-actions/upload-cloud-storage@v2"
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-      - name: Print pushed image info
-        env:
-          DIGEST: ${{ steps.buildpush.outputs.digest }}
-          IMAGE_ID: ${{ steps.buildpush.outputs.imageid }}
-          METADATA: ${{ steps.buildpush.outputs.metadata }}
-        run: |
-          echo $DIGEST;
-          echo $IMAGE_ID;
-          echo $METADATA;
-      - name: Dispatch deployment (staging)
-        uses: peter-evans/repository-dispatch@26b39ed245ab8f31526069329e112ab2fb224588
-        with:
-          token: ${{ secrets.GH_DISPATCH_TOKEN }}
-          repository: sourcifyeth/infra
-          event-type: deploy
-          client-payload: >-
-            {
-              "ref": "${{ github.ref }}",
-              "sha": "${{ github.sha }}",
-              "component": "playground",
-              "environment": "staging",
-              "image_tag": "${{ github.ref_name }}@${{ steps.buildpush.outputs.digest }}"
-            }
-      - name: Dispatch deployment (production)
-        uses: peter-evans/repository-dispatch@26b39ed245ab8f31526069329e112ab2fb224588
-        with:
-          token: ${{ secrets.GH_DISPATCH_TOKEN }}
-          repository: sourcifyeth/infra
-          event-type: deploy
-          client-payload: >-
-            {
-              "ref": "${{ github.ref }}",
-              "sha": "${{ github.sha }}",
-              "component": "playground",
-              "environment": "production",
-              "image_tag": "${{ github.ref_name }}@${{ steps.buildpush.outputs.digest }}"
-            }
+          path: "build"
+          destination: "sourcify-docs-bucket"
+          parent: false
+          glob: "**/*"
