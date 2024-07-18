@@ -34,6 +34,6 @@ jobs:
         uses: "google-github-actions/upload-cloud-storage@v2"
         with:
           path: "build"
-          destination: "sourcify-docs-bucket"
+          destination: "sourcify-playground-bucket"
           parent: false
           glob: "**/*"
