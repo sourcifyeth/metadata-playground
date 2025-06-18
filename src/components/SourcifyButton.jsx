@@ -2,36 +2,22 @@ import { useEffect, useState } from "react";
 import logo from "../assets/sourcify.png";
 
 const SourcifyButton = ({ chain, address }) => {
-  const sourcifyFullMatchUrl = `https://repo.sourcify.dev/contracts/full_match/${chain}/${address}`;
-  const sourcifyPartialMatchUrl = `https://repo.sourcify.dev/contracts/partial_match/${chain}/${address}`;
+  const sourcifyAPIUrl = `https://sourcify.dev/server/v2/contract/${chain}/${address}`;
+  const sourcifyRepoUrl = `https://repo.sourcify.dev/${chain}/${address}`;
   const [match, setMatch] = useState(null);
   useEffect(() => {
-    fetch(sourcifyFullMatchUrl)
+    fetch(sourcifyAPIUrl)
       .then((res) => {
         if (res.status === 200) {
-          setMatch("full");
+          setMatch(true);
         }
       })
       .catch((err) => {
-        fetch(sourcifyPartialMatchUrl)
-          .then((res) => {
-            if (res.status === 200) {
-              setMatch("partial");
-            }
-          })
-          .catch((err) => {
-            setMatch(null);
-          });
+        setMatch(false);
       });
-  }, [sourcifyFullMatchUrl, sourcifyPartialMatchUrl]);
+  }, [sourcifyAPIUrl]);
 
-  let url;
-
-  if (match === "full") url = sourcifyFullMatchUrl;
-  else if (match === "partial") url = sourcifyPartialMatchUrl;
-  else {
-    url = null;
-  }
+  const url = match ? sourcifyRepoUrl : null;
 
   return (
     <button

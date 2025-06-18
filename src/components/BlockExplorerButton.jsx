@@ -1,7 +1,6 @@
 import blockscoutLogo from "../assets/blockscout.png";
 import etherscanLogo from "../assets/etherscan.webp";
 const BlockExplorerButton = ({ chain, address, sourcifyChains, etherscanChains }) => {
-  console.log(etherscanChains);
   const etherscanURL = etherscanChains.find((etherscanChain) => etherscanChain.chainid == chain)?.blockexplorer;
 
   const blockscoutDomains = {
