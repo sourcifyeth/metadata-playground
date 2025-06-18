@@ -41,6 +41,7 @@ function App() {
   const [chainIndex, setChainIndex] = useState(0);
   const [chainObject, setChainObject] = useState();
   const [sourcifyChains, setSourcifyChains] = useState();
+  const [etherscanChains, setEtherscanChains] = useState();
   const [isModalOpen, setModalOpen] = useState(false);
   const [customByteCode, setCustomByteCode] = useState();
   const [chainArray, setChainArray] = useState(); // chainId.network/chains.json result
@@ -68,7 +69,7 @@ function App() {
     fetch("https://chainid.network/chains.json")
       .then((res) => res.json())
       .then((arr) => {
-        const ethereumChainIds = [1, 5, 11155111];
+        const ethereumChainIds = [1, 11155111, 1337];
         // move ethereum networks to the top
         const sortedArr = arr.sort((a, b) => {
           if (ethereumChainIds.includes(a.chainId) && ethereumChainIds.includes(b.chainId)) {
@@ -101,6 +102,12 @@ function App() {
       .then((res) => res.json())
       .then((arr) => {
         setSourcifyChains(arr);
+      });
+
+    fetch("https://api.etherscan.io/v2/chainlist")
+      .then((res) => res.json())
+      .then((response) => {
+        setEtherscanChains(response.result);
       });
   }, []);
 
@@ -277,6 +284,7 @@ function App() {
           address={address}
           chainObject={chainArray[chainIndex]}
           sourcifyChains={sourcifyChains}
+          etherscanChains={etherscanChains}
         />
         <div className="flex flex-col items-center">
           <img className="w-12 md:w-16" src={process.env.PUBLIC_URL + "/solidity.png"} alt="Solidity logo" />

@@ -15,9 +15,7 @@ const SolcVersion = ({ hexversion }) => {
   }
   const rawHex = hexversion.slice(2); // remove 0x
   const rawHexFields = rawHex.match(/.{1,2}/g); // split into two chars
-  const decimalFields = rawHexFields
-    .map((rawHex) => "0x" + rawHex)
-    .map((prefixedHex) => Number(prefixedHex));
+  const decimalFields = rawHexFields.map((rawHex) => "0x" + rawHex).map((prefixedHex) => Number(prefixedHex));
   const version = decimalFields.join(".");
   return version;
 };
@@ -27,20 +25,12 @@ const ByteCodeInput = ({ children, cborByteLength }) => {
   useEffect(() => {
     bottom.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
     // Scroll again to fix when sometimes it does not scroll fully to the bottom.
-    setTimeout(
-      () =>
-        bottom.current.scrollIntoView({ behavior: "smooth", block: "nearest" }),
-      200
-    );
+    setTimeout(() => bottom.current.scrollIntoView({ behavior: "smooth", block: "nearest" }), 200);
   });
   // If cborByteLength === 0, don't highlight.
   const cborStrLength = 2 * cborByteLength;
-  const unhighlighted = cborByteLength
-    ? children.slice(0, -cborStrLength - 4)
-    : children;
-  const highlighted = cborByteLength
-    ? children.slice(-cborStrLength - 4, -4)
-    : null;
+  const unhighlighted = cborByteLength ? children.slice(0, -cborStrLength - 4) : children;
+  const highlighted = cborByteLength ? children.slice(-cborStrLength - 4, -4) : null;
   const cborBytes = cborByteLength ? children.slice(-4) : null;
   return (
     <div className="text-gray-700 overflow-y-auto break-all max-h-48 md:max-h-56 font-mono">
@@ -62,6 +52,7 @@ export default function Modal({
   address,
   chainObject,
   sourcifyChains,
+  etherscanChains,
 }) {
   const focusButtonRef = useRef();
   useEffect(() => {
@@ -72,18 +63,11 @@ export default function Modal({
     return null;
   }
   const { chainId: chain, name: networkName } = chainObject;
-  const cborByteLength = decodedCbor
-    ? parseInt(Number("0x" + byteCode.slice(-4)), 10)
-    : 0;
+  const cborByteLength = decodedCbor ? parseInt(Number("0x" + byteCode.slice(-4)), 10) : 0;
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="fixed z-10 inset-0 md:mx-24 "
-        initialFocus={focusButtonRef}
-        onClose={onClose}
-      >
+      <Dialog as="div" className="fixed z-10 inset-0 md:mx-24 " initialFocus={focusButtonRef} onClose={onClose}>
         <div className="flex justify-center items-center h-screen py-4 px-4 pb-4 text-center   sm:p-0 text-sm md:text-base">
           <Transition.Child
             as={Fragment}
@@ -98,10 +82,7 @@ export default function Modal({
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
-          <span
-            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-            aria-hidden="true"
-          >
+          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
             &#8203;
           </span>
           <Transition.Child
@@ -119,50 +100,34 @@ export default function Modal({
                   <div className="mt-3 sm:mt-0 sm:ml-4 sm:text-left white">
                     {address ? (
                       <div>
-                        <Dialog.Title
-                          as="h3"
-                          className="text-center text-lg leading-6 font-medium text-gray-900"
-                        >
+                        <Dialog.Title as="h3" className="text-center text-lg leading-6 font-medium text-gray-900">
                           Contract {address} on {networkName}
                         </Dialog.Title>
 
-                        <div
-                          className="flex justify-center align-middle my-2"
-                          ref={focusButtonRef}
-                        >
+                        <div className="flex justify-center align-middle my-2" ref={focusButtonRef}>
                           <SourcifyButton chain={chain} address={address} />
                           <BlockExplorerButton
                             chain={chain}
                             address={address}
                             sourcifyChains={sourcifyChains}
+                            etherscanChains={etherscanChains}
                           />
                         </div>
                       </div>
                     ) : null}
-                    <p className="text-lg font-bold text-gray-900">
-                      Contract Bytecode
-                    </p>
-                    <ByteCodeInput cborByteLength={cborByteLength}>
-                      {byteCode}
-                    </ByteCodeInput>
+                    <p className="text-lg font-bold text-gray-900">Contract Bytecode</p>
+                    <ByteCodeInput cborByteLength={cborByteLength}>{byteCode}</ByteCodeInput>
                     {/* Decoded */}
                     <div className="mt-4">
-                      <p className="text-lg font-bold text-gray-900">
-                        CBOR decoding
-                      </p>
+                      <p className="text-lg font-bold text-gray-900">CBOR decoding</p>
 
                       {decodedCbor ? (
                         <div>
                           <span>CBOR length:</span>{" "}
-                          <pre className={"inline-block " + cborHighlightStyle}>
-                            {cborByteLength} Bytes
-                          </pre>
+                          <pre className={"inline-block " + cborHighlightStyle}>{cborByteLength} Bytes</pre>
                           <span className="text-xs underline ml-2 text-gray-700">
                             <a
-                              href={`https://cbor.me/?bytes=${byteCode.slice(
-                                -(2 * cborByteLength) - 4,
-                                -4
-                              )}`}
+                              href={`https://cbor.me/?bytes=${byteCode.slice(-(2 * cborByteLength) - 4, -4)}`}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -180,17 +145,13 @@ export default function Modal({
                     {/* solc version */}
                     {decodedCbor?.solc && (
                       <div className="mt-4">
-                        <p className="text-lg font-bold text-gray-900">
-                          Solidity compiler version (decoded)
-                        </p>
+                        <p className="text-lg font-bold text-gray-900">Solidity compiler version (decoded)</p>
                         <SolcVersion hexversion={decodedCbor.solc} />
                       </div>
                     )}
                     {/* IPFS Link */}
                     <div className="mt-4">
-                      <p className="text-lg font-bold text-gray-900">
-                        Metadata Hash (decoded)
-                      </p>
+                      <p className="text-lg font-bold text-gray-900">Metadata Hash (decoded)</p>
                       <MetadataAndSources metadataHash={metadataHash} />
                     </div>
                   </div>

@@ -1,18 +1,8 @@
 import blockscoutLogo from "../assets/blockscout.png";
 import etherscanLogo from "../assets/etherscan.webp";
-const BlockExplorerButton = ({ chain, address, sourcifyChains }) => {
-  const sourcifyChainObject = sourcifyChains.find((sourcifyChain) => sourcifyChain.chainId === chain);
-  // Filter chains that include an 'etherscanAPI' and transform their URLs to exclude the api part in https://api.etherscan.io/api
-  let etherscanURL;
-
-  if (sourcifyChainObject?.etherscanAPI) {
-    const url = new URL(sourcifyChainObject.etherscanAPI);
-    const subdomains = url.hostname.split("."); // Split the hostname into parts
-    const cleanedHostname = subdomains.slice(1).join("."); // Join parts back without the first subdomain
-    etherscanURL = `https://${cleanedHostname}`; // Prepend 'https://' to the cleaned hostname, ignoring any paths
-  }
-
-  console.log(etherscanURL);
+const BlockExplorerButton = ({ chain, address, sourcifyChains, etherscanChains }) => {
+  console.log(etherscanChains);
+  const etherscanURL = etherscanChains.find((etherscanChain) => etherscanChain.chainid == chain)?.blockexplorer;
 
   const blockscoutDomains = {
     100: "xdai/mainnet",
