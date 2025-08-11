@@ -147,7 +147,11 @@ function App() {
       // Auto-select: race all RPCs and use the fastest one
       const publicRpcs =
         chainlistObject.rpc?.filter(
-          (rpc) => !rpc.includes("infura.io") && !rpc.includes("${") && rpc.startsWith("http")
+          (rpc) =>
+            !rpc.includes("infura.io") &&
+            !rpc.includes("cloudflare-eth.com") &&
+            !rpc.includes("${") &&
+            rpc.startsWith("http")
         ) || [];
 
       if (publicRpcs.length > 0) {
@@ -197,6 +201,7 @@ function App() {
       [chainId]: rpcUrl,
     }));
   };
+
 
   const handleAddressChange = (e) => {
     e.preventDefault();
@@ -259,13 +264,14 @@ function App() {
         }
       }
       if (code === "0x") {
-        return setErrorMessage("No contract found at the address");
+        return setErrorMessage("No contract found at the address on chain " + provider.network.name);
       }
       setByteCode(code);
       decodeBytecodeCbor(code);
     },
     [address, provider]
   );
+
 
   const handleDecodeCustomByteCode = useCallback(
     (e) => {
@@ -353,7 +359,13 @@ function App() {
                     >
                       <option value="">Auto-select (default)</option>
                       {chainArray[chainIndex].rpc
-                        .filter((rpc) => !rpc.includes("${") && rpc.startsWith("http"))
+                        .filter(
+                          (rpc) =>
+                            !rpc.includes("infura.io") &&
+                            !rpc.includes("cloudflare-eth.com") &&
+                            !rpc.includes("${") &&
+                            rpc.startsWith("http")
+                        )
                         .map((rpc, i) => (
                           <option key={i} value={rpc}>
                             {rpc.length > 50 ? rpc.substring(0, 50) + "..." : rpc}
