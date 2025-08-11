@@ -47,7 +47,7 @@ function App() {
   const [chainArray, setChainArray] = useState(); // chainId.network/chains.json result
   const [connected, setConnected] = useState("not connected");
   const [selectedRpcs, setSelectedRpcs] = useState({}); // chainId -> rpc URL mapping
-
+  const [currentRpc, setCurrentRpc] = useState(null); // Currently active RPC URL
 
   // On Mount
   useEffect(() => {
@@ -59,7 +59,7 @@ function App() {
     fetch("https://chainid.network/chains.json")
       .then((res) => res.json())
       .then((arr) => {
-        const ethereumChainIds = [1, 11155111, 1337];
+        const ethereumChainIds = [1, 11155111, 560048];
         // move ethereum networks to the top
         const sortedArr = arr.sort((a, b) => {
           if (ethereumChainIds.includes(a.chainId) && ethereumChainIds.includes(b.chainId)) {
@@ -111,50 +111,79 @@ function App() {
     // Find a working RPC URL from the chain data
     let provider;
     let rpcUrl = null;
-    
-    // Use selected RPC if available, otherwise find first public RPC
+
+    // Use selected RPC if available, otherwise try RPCs until one works
     if (selectedRpcs[chainlistObject.chainId]) {
       rpcUrl = selectedRpcs[chainlistObject.chainId];
-    } else {
-      // Filter out Infura RPCs and find a public RPC
-      const publicRpcs = chainlistObject.rpc?.filter(rpc => 
-        !rpc.includes('infura.io') && 
-        !rpc.includes('${') && 
-        rpc.startsWith('http')
-      ) || [];
-      
-      if (publicRpcs.length > 0) {
-        rpcUrl = publicRpcs[0];
-      } else if (chainlistObject.rpc && chainlistObject.rpc.length > 0) {
-        // Fallback to first RPC if no public RPCs found
-        rpcUrl = chainlistObject.rpc[0];
-      }
-    }
-    
-    if (rpcUrl) {
-      try {
-        provider = new ethers.providers.JsonRpcProvider(rpcUrl, {
-          name: chainlistObject.name,
-          chainId: chainlistObject.chainId,
-          ensAddress: chainlistObject?.ens?.registry,
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    setProvider(provider);
-    provider
-      .getNetwork()
-      .then((data) => {
-        setConnected("connected");
-      })
-      .catch((err) => {
-        rpcUrl
-          ? setErrorMessage("Can't connect to the network at " + rpcUrl)
-          : setErrorMessage("Can't connect to the network: No RPC found");
 
+      if (rpcUrl) {
+        try {
+          provider = new ethers.providers.JsonRpcProvider(rpcUrl, {
+            name: chainlistObject.name,
+            chainId: chainlistObject.chainId,
+            ensAddress: chainlistObject?.ens?.registry,
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      setProvider(provider);
+      if (provider) {
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
+
+        Promise.race([provider.getNetwork(), timeoutPromise])
+          .then(() => {
+            setConnected("connected");
+            setCurrentRpc(rpcUrl);
+          })
+          .catch(() => {
+            setErrorMessage("Can't connect to the network at " + rpcUrl);
+            setConnected("not connected");
+            setCurrentRpc(null);
+          });
+      }
+    } else {
+      // Auto-select: race all RPCs and use the fastest one
+      const publicRpcs =
+        chainlistObject.rpc?.filter(
+          (rpc) => !rpc.includes("infura.io") && !rpc.includes("${") && rpc.startsWith("http")
+        ) || [];
+
+      if (publicRpcs.length > 0) {
+        // Create promises for all RPCs with timeout
+        const rpcPromises = publicRpcs.map(async (rpcUrl) => {
+          const testProvider = new ethers.providers.JsonRpcProvider(rpcUrl, {
+            name: chainlistObject.name,
+            chainId: chainlistObject.chainId,
+            ensAddress: chainlistObject?.ens?.registry,
+          });
+
+          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
+
+          await Promise.race([testProvider.getNetwork(), timeoutPromise]);
+          return { provider: testProvider, url: rpcUrl };
+        });
+
+        // Race all RPCs and use the first one that succeeds
+        Promise.any(rpcPromises)
+          .then(({ provider, url }) => {
+            setProvider(provider);
+            setConnected("connected");
+            setCurrentRpc(url);
+            console.log(`Successfully connected to fastest RPC: ${url}`);
+          })
+          .catch(() => {
+            setErrorMessage("Can't connect to any available RPC");
+            setConnected("not connected");
+            setCurrentRpc(null);
+          });
+      } else {
+        setErrorMessage("No public RPCs available");
         setConnected("not connected");
-      });
+        setCurrentRpc(null);
+      }
+    }
   }, [chainIndex, chainArray, selectedRpcs]);
 
   const chainIdToIndex = (id) => {
@@ -163,9 +192,9 @@ function App() {
   };
 
   const handleRpcChange = (chainId, rpcUrl) => {
-    setSelectedRpcs(prev => ({
+    setSelectedRpcs((prev) => ({
       ...prev,
-      [chainId]: rpcUrl
+      [chainId]: rpcUrl,
     }));
   };
 
@@ -316,27 +345,27 @@ function App() {
                 />
                 {chainArray[chainIndex]?.rpc?.length > 0 && (
                   <div className="mt-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select RPC Endpoint:
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Select RPC Endpoint:</label>
                     <select
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-ceruleanBlue-100 focus:border-ceruleanBlue-100 text-sm"
-                      value={selectedRpcs[chainArray[chainIndex].chainId] || ''}
+                      value={selectedRpcs[chainArray[chainIndex].chainId] || ""}
                       onChange={(e) => handleRpcChange(chainArray[chainIndex].chainId, e.target.value)}
                     >
                       <option value="">Auto-select (default)</option>
                       {chainArray[chainIndex].rpc
-                        .filter(rpc => !rpc.includes('${') && rpc.startsWith('http'))
+                        .filter((rpc) => !rpc.includes("${") && rpc.startsWith("http"))
                         .map((rpc, i) => (
                           <option key={i} value={rpc}>
-                            {rpc.length > 50 ? rpc.substring(0, 50) + '...' : rpc}
+                            {rpc.length > 50 ? rpc.substring(0, 50) + "..." : rpc}
                           </option>
                         ))}
                     </select>
-                    {selectedRpcs[chainArray[chainIndex].chainId] && (
+                    {selectedRpcs[chainArray[chainIndex].chainId] ? (
                       <div className="text-xs text-gray-600 mt-1">
                         Using: {selectedRpcs[chainArray[chainIndex].chainId]}
                       </div>
+                    ) : (
+                      currentRpc && <div className="text-xs text-gray-600 mt-1 flex">Auto-selected: {currentRpc}</div>
                     )}
                   </div>
                 )}
