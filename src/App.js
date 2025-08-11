@@ -48,6 +48,7 @@ function App() {
   const [connected, setConnected] = useState("not connected");
   const [selectedRpcs, setSelectedRpcs] = useState({}); // chainId -> rpc URL mapping
   const [currentRpc, setCurrentRpc] = useState(null); // Currently active RPC URL
+  const [shouldAutoSubmit, setShouldAutoSubmit] = useState(false); // Auto-submit after chain switch
 
   // On Mount
   useEffect(() => {
@@ -202,6 +203,26 @@ function App() {
     }));
   };
 
+  const handleExampleContractClick = (contract) => {
+    const currentChainId = chainArray[chainIndex]?.chainId;
+    const targetChainId = contract.chainId;
+
+    // Set the address first
+    setAddress(contract.address);
+
+    // If we're switching chains, set flag to auto-submit after connection
+    if (currentChainId !== targetChainId) {
+      setShouldAutoSubmit(true);
+      const index = chainIdToIndex(contract.chainId);
+      setChainIndex(index);
+    } else if (connected === "connected") {
+      // Same chain and connected, submit immediately
+      handleSubmitAddress();
+    } else {
+      // Same chain but not connected, wait for connection
+      setShouldAutoSubmit(true);
+    }
+  };
 
   const handleAddressChange = (e) => {
     e.preventDefault();
@@ -272,6 +293,17 @@ function App() {
     [address, provider]
   );
 
+  // Auto-submit when connected after example contract click
+  useEffect(() => {
+    if (shouldAutoSubmit && connected === "connected" && provider) {
+      // Make sure the provider is for the correct chain
+      const expectedChainId = chainArray[chainIndex]?.chainId;
+      if (provider.network?.chainId === expectedChainId) {
+        setShouldAutoSubmit(false);
+        handleSubmitAddress();
+      }
+    }
+  }, [shouldAutoSubmit, connected, provider, chainArray, chainIndex, handleSubmitAddress]);
 
   const handleDecodeCustomByteCode = useCallback(
     (e) => {
@@ -450,11 +482,7 @@ function App() {
                   {/* <ul> */}
                   {nonrandomContracts.map((contract, i) => (
                     <button
-                      onClick={() => {
-                        setAddress(contract.address);
-                        const index = chainIdToIndex(contract.chainId);
-                        setChainIndex(index);
-                      }}
+                      onClick={() => handleExampleContractClick(contract)}
                       key={`exampleContract-${i}`}
                       className="mx-1 py-2 px-4 my-1 bg-ceruleanBlue-10 hover:bg-ceruleanBlue-100 hover:text-white text-ceruleanBlue-100 transition ease-in duration-100 text-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
                     >
