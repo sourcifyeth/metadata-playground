@@ -46,18 +46,8 @@ function App() {
   const [customByteCode, setCustomByteCode] = useState();
   const [chainArray, setChainArray] = useState(); // chainId.network/chains.json result
   const [connected, setConnected] = useState("not connected");
+  const [selectedRpcs, setSelectedRpcs] = useState({}); // chainId -> rpc URL mapping
 
-  const INFURA_URLS = {
-    1: "https://mainnet.infura.io/v3/",
-    3: "https://ropsten.infura.io/v3/",
-    4: "https://rinkeby.infura.io/v3/",
-    5: "https://goerli.infura.io/v3/",
-    11155111: "https://sepolia.infura.io/v3/",
-    42: "https://kovan.infura.io/v3/",
-    42161: "https://arbitrum-mainnet.infura.io/v3/",
-    11297108099: "https://palm-testnet.infura.io/v3/",
-    11297108109: "https://palm-mainnet.infura.io/v3/",
-  };
 
   // On Mount
   useEffect(() => {
@@ -118,21 +108,36 @@ function App() {
     setConnected("connecting");
     const chainlistObject = chainArray[chainIndex];
 
-    // Decide provider URL
+    // Find a working RPC URL from the chain data
     let provider;
-    // INFURA with Ethereum networks, Arbitrum, Palm-testnet, Palm
-    if ([1, 3, 4, 5, 11155111, 42, 42161, 11297108099, 11297108109].includes(chainlistObject.chainId)) {
-      provider = new ethers.providers.JsonRpcProvider(
-        INFURA_URLS[chainlistObject.chainId] + process.env.REACT_APP_INFURA_KEY,
-        {
+    let rpcUrl = null;
+    
+    // Use selected RPC if available, otherwise find first public RPC
+    if (selectedRpcs[chainlistObject.chainId]) {
+      rpcUrl = selectedRpcs[chainlistObject.chainId];
+    } else {
+      // Filter out Infura RPCs and find a public RPC
+      const publicRpcs = chainlistObject.rpc?.filter(rpc => 
+        !rpc.includes('infura.io') && 
+        !rpc.includes('${') && 
+        rpc.startsWith('http')
+      ) || [];
+      
+      if (publicRpcs.length > 0) {
+        rpcUrl = publicRpcs[0];
+      } else if (chainlistObject.rpc && chainlistObject.rpc.length > 0) {
+        // Fallback to first RPC if no public RPCs found
+        rpcUrl = chainlistObject.rpc[0];
+      }
+    }
+    
+    if (rpcUrl) {
+      try {
+        provider = new ethers.providers.JsonRpcProvider(rpcUrl, {
           name: chainlistObject.name,
           chainId: chainlistObject.chainId,
           ensAddress: chainlistObject?.ens?.registry,
-        }
-      );
-    } else {
-      try {
-        provider = new ethers.providers.JsonRpcProvider(chainlistObject.rpc[0]);
+        });
       } catch (err) {
         console.error(err);
       }
@@ -144,17 +149,24 @@ function App() {
         setConnected("connected");
       })
       .catch((err) => {
-        chainlistObject.rpc[0]
-          ? setErrorMessage("Can't connect to the network at " + chainlistObject.rpc[0])
+        rpcUrl
+          ? setErrorMessage("Can't connect to the network at " + rpcUrl)
           : setErrorMessage("Can't connect to the network: No RPC found");
 
         setConnected("not connected");
       });
-  }, [chainIndex, chainArray]);
+  }, [chainIndex, chainArray, selectedRpcs]);
 
   const chainIdToIndex = (id) => {
     const chainIndex = chainArray.findIndex((chainObj) => chainObj.chainId === id);
     return chainIndex;
+  };
+
+  const handleRpcChange = (chainId, rpcUrl) => {
+    setSelectedRpcs(prev => ({
+      ...prev,
+      [chainId]: rpcUrl
+    }));
   };
 
   const handleAddressChange = (e) => {
@@ -302,6 +314,32 @@ function App() {
                   value={chainIndex}
                   onChange={(index) => setChainIndex(index)}
                 />
+                {chainArray[chainIndex]?.rpc?.length > 0 && (
+                  <div className="mt-3">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Select RPC Endpoint:
+                    </label>
+                    <select
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-ceruleanBlue-100 focus:border-ceruleanBlue-100 text-sm"
+                      value={selectedRpcs[chainArray[chainIndex].chainId] || ''}
+                      onChange={(e) => handleRpcChange(chainArray[chainIndex].chainId, e.target.value)}
+                    >
+                      <option value="">Auto-select (default)</option>
+                      {chainArray[chainIndex].rpc
+                        .filter(rpc => !rpc.includes('${') && rpc.startsWith('http'))
+                        .map((rpc, i) => (
+                          <option key={i} value={rpc}>
+                            {rpc.length > 50 ? rpc.substring(0, 50) + '...' : rpc}
+                          </option>
+                        ))}
+                    </select>
+                    {selectedRpcs[chainArray[chainIndex].chainId] && (
+                      <div className="text-xs text-gray-600 mt-1">
+                        Using: {selectedRpcs[chainArray[chainIndex].chainId]}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="text-xs text-gray-600 text-center mt-1">
                   Network list from{" "}
                   <a
