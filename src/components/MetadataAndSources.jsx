@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import CollapsibleCode from "./CollapsibleCode";
 import IPFSButton from "./IPFSButton";
 import Sources from "./Sources";
-
-const IPFS_GATEWAY = "https://ipfs.io/ipfs";
+import { IPFS_GATEWAY } from "../constants";
 
 const FetchedMetadata = ({ metadataHashStr, metadataJson, setMetadataJson }) => {
   const [isLoading, setIsLoading] = useState(true);
