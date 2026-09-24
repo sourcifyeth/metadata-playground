@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
 import CollapsibleCode from "./CollapsibleCode";
 import IPFSButton from "./IPFSButton";
-
-const IPFS_GATEWAY = "https://ipfs.io/ipfs";
+import { IPFS_GATEWAY } from "../constants";
 
 const extractIpfsHashFromSource = (source) => {
   return source.urls.filter((url) => url.startsWith("dweb:/"))[0].split("/")[2];

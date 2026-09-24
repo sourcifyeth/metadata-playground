@@ -175,12 +175,12 @@ export default function Explainer(props) {
             <div>Try it! 👇</div>
             <div>
               <a
-                href="https://ipfs.io/ipfs/QmbGXtNqvZYEcbjK6xELyBQGEmzqXPDqyJNoQYjJPrST9S"
+                href="https://ipfs.filebase.io/ipfs/QmbGXtNqvZYEcbjK6xELyBQGEmzqXPDqyJNoQYjJPrST9S"
                 target="_blank"
                 className="text-ceruleanBlue-100 hover:underline"
                 rel="noreferrer"
               >
-                https://ipfs.io/ipfs/QmbGXtNqvZYEcbjK6xELyBQGEmzqXPDqyJNoQYjJPrST9S
+                https://ipfs.filebase.io/ipfs/QmbGXtNqvZYEcbjK6xELyBQGEmzqXPDqyJNoQYjJPrST9S
               </a>
             </div>
           </div>
